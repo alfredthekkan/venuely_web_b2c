@@ -1,0 +1,159 @@
+openapi: 3.0.3
+info:
+  title: Venuely Booking API
+  description: API for managing bookings in the Venuely system.
+  version: 1.0.0
+paths:
+  /bookings:
+    get:
+      summary: Retrieve a list of bookings
+      responses:
+        '200':
+          description: A list of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+    post:
+      summary: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '201':
+          description: Booking created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+  /bookings/{bookingId}:
+    get:
+      summary: Retrieve a specific booking by ID
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A single booking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking not found
+    put:
+      summary: Update a specific booking by ID
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Booking updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking not found
+    delete:
+      summary: Delete a specific booking by ID
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Booking deleted successfully
+        '404':
+          description: Booking not found
+  /bookings/slots:
+    post:
+      summary: Retrieve available booking slots
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: Date for which to retrieve available slots
+                serviceIds:
+                  type: array
+                  items:
+                    type: string
+                  description: List of service IDs to filter available slots
+              required:
+                - date
+                - serviceIds
+      responses:
+        '200':
+          description: A list of available booking slots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: time
+components:
+  schemas:
+    Slot:
+      type: object
+      properties:
+        time:
+          type: string
+          format: time
+          description: Available time slot
+      required:
+        - time
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the booking
+        venue:
+          type: string
+          description: Name of the venue
+        date:
+          type: string
+          format: date
+          description: Date of the booking
+        time:
+          type: string
+          description: Time of the booking
+        customerName:
+          type: string
+          description: Name of the customer
+        customerEmail:
+          type: string
+          format: email
+          description: Email of the customer
+      required:
+        - venue
+        - date
+        - time
+        - customerName
+        - customerEmail
