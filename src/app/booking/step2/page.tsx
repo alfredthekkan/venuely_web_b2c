@@ -1,72 +1,96 @@
 "use client";
-import  DateScroller from '@/components/DateScroller';
-import TimeSlotGrid from '@/components/TimeSlotGrid';
+import { TimeSlotPicker } from '@/components/TimeSlotPicker';
 import { Button } from '@/components/ui/button';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import { BookingContext } from '@/context/BookingContext';
+import { NavigationContext } from '@/context/NavigationContext';
+import { BookingDateSelector } from '@/components/DateScroller';
+import { DefaultService, OpenAPI } from "@/lib/api";
 
-function TimeSlot() {
-  const dates = [
-  { id: "2025-10-01", label: "Thu, 1 Oct" },
-  { id: "2025-10-02", label: "Fri, 2 Oct" },
-  { id: "2025-10-03", label: "Sat, 3 Oct" },
-  { id: "2025-10-04", label: "Sun, 4 Oct" },
-];
+export default function TimeSlotSelector() {
 
-const [selectedDate, setSelectedDate] = useState(dates[0].id);
-const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-const [slots, setSlots] = useState<string[]>([]);
-const router = useRouter();
+  // Set navigation title
+  const navContext = useContext(NavigationContext)
+  const bookingContext = useContext(BookingContext)
 
-const fetchSlots = async (dateId: string) => {
-  // call API to fetch slots for the date
-  const mockSlots = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
-  setSlots(mockSlots);
-};
+  useEffect(() => {
+    navContext.setTitle("Pick a Slot")
+  }, [navContext.title])
 
-// when date is clicked
-const handleDateClick = (dateId: string) => {
-  setSelectedDate(dateId);
-  fetchSlots(dateId);
-};
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [selectedTime, setSelectedTime] = useState<string | null>(null)
+  const [isBookingLoading, setIsBookingLoading] = useState(false)
+  const [slots, setSlots] = useState<string[]>([]);
+  const isBookingComplete = !!selectedDate && !!selectedTime // Ensure both are non-null strings
 
-const handleSlotClick = (slot: string) => {
-  setSelectedSlot(slot);
-};
+  useEffect(() => {
+    fetchSlots()
+  }, [selectedDate])
 
-const handleConfirm = () => {
-  router.push("/booking/step3");
-}
+  //respond to date change
+  // Reset time slot when a new date is selected
+  const handleDateSelect = (date: string) => {
+    setSelectedDate(date)
+    setSelectedTime(null) 
+    fetchSlots()
+  }
 
-const context = useContext(BookingContext)
+  const fetchSlots = async () => {
+
+    OpenAPI.BASE = "https://2bfdc92c-3826-4fe5-847d-bd37d96b59ec.mock.pstmn.io/";
+    const requestBody = { date: selectedDate ? selectedDate : "", serviceIds: bookingContext.booking.services };
+    
+    // call API to fetch slots for the date
+    const slots = await DefaultService.postBookingsSlots(requestBody);
+    console.log("Available slots:", slots);
+    setSlots(slots);
+  };
+
+  const handleBooking = () => {
+    if (isBookingComplete) {
+      setIsBookingLoading(true)
+      console.log(`Booking request for: Date ${selectedDate}, Time ${selectedTime}`)
+      
+      // *** Booking Logic (Simulated) ***
+      setTimeout(() => {
+        alert(`Booking Confirmed! Date: ${selectedDate}, Time: ${selectedTime}`)
+        setIsBookingLoading(false)
+      }, 1500);
+      // *********************************
+    }
+  }
+
   return (
-    <>
-    <h1>
-      Selected Services : {context.booking.services}
-    </h1>
-    <div className="overflow-x-auto">
-    <div className="flex space-x-2">
-      {dates.map((date) => (
-        <Button
-          key={date.id}
-          variant={date.id === selectedDate ? "default" : "outline"}
-          onClick={() => handleDateClick(date.id)}
-        >
-          {date.label}
-        </Button>
-      ))}
+    <div className="space-y-8 max-w-lg mx-auto p-6 bg-background shadow-2xl rounded-xl border mt-4">
+      
+      {/* 1. Date Selection */}
+      <BookingDateSelector 
+        onDateSelect={handleDateSelect} 
+        selectedDate={selectedDate}
+      />
+
+      <hr className="my-6 border-t border-muted" />
+
+      {/* 2. Time Slot Selection */}
+      {/* TimeSlotPicker needs to be defined - you can use the one from the previous response */}
+      <TimeSlotPicker 
+        slots={slots} 
+        onSelect={setSelectedTime} 
+        // Disable time selection until a date is chosen
+        disabled={!selectedDate}
+      />
+      
+      <hr className="my-6 border-t border-muted" />
+
+      {/* 3. Confirmation Button */}
+      <Button 
+        onClick={handleBooking} 
+        disabled={!isBookingComplete || isBookingLoading} 
+        className="w-full h-12 text-lg"
+      >
+        {isBookingLoading ? "Processing..." : `Book for ${selectedTime || 'a Time'}`}
+      </Button>
     </div>
-  </div>
-
-  <div className="mt-4 grid grid-cols-3 gap-2">
-  {slots.map((slot) => (
-    <Button key={slot} onClick={() => handleSlotClick(slot)} variant={slot === selectedSlot ? "default" : "outline"}>{slot}</Button>
-  ))}
-</div>
-<Button className="mt-4" disabled={!selectedSlot} onClick={handleConfirm}>Confirm {selectedSlot ? `(${selectedSlot})` : ""}</Button>
-  </>
-  );
+  )
 }
-
-export default TimeSlot;

@@ -2,54 +2,21 @@
 import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormControl } from '@/components/ui/form';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import { DefaultService, OpenAPI } from "@/lib/api";
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { BookingContext } from '@/context/BookingContext';
-
-
-function ServiceCheckBoxItem({ label, onChange }: { label: string, onChange: (checked: boolean) => void }) {
-  return (
-    <div className="flex items-center gap-3">
-        <Checkbox id={label} />
-        <Label htmlFor={label}>{label}</Label>
-      </div>
-  );
-}
-
-function Step1Services() {
-
-  const allServices = ['Hair Cut', 'Shampoo', 'Beard Trim', 'Massage', 'Facial', 'Manicure', 'Pedicure'];
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const router = useRouter();
-
-  const handleCheckboxChange = (label: string, checked: boolean) => {
-    setSelectedServices((prev) =>
-      checked ? [...prev, label] : prev.filter((item) => item !== label)
-    );
-  };
-
- const servicesCheckBoxItems = allServices.map((service) => (
-    <ServiceCheckBoxItem key={service} label={service} onChange={(checked) => handleCheckboxChange(service, checked)} />
-  ));
-
-  
-
-  return (
-    <div className="flex flex-col gap-4 items-start px-4">
-      <h1 className="text-2xl font-bold mb-4 text-gray-500">What services do you want to book?</h1>
-      {servicesCheckBoxItems}
-      <div className="w-full">
-        <Button>Create New Booking</Button>
-
-      </div>
-    </div>
-  );
-}
+import { NavigationContext } from '@/context/NavigationContext';
 
 function ServiceSelectionForm() {
+
+  const navContext = useContext(NavigationContext)
+
+  useEffect(() => {
+    navContext.setTitle("Pick Services")
+  }, [navContext.title])
 
   type FormValues = {
     services: string[];
@@ -89,7 +56,7 @@ function ServiceSelectionForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="m-4 space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="m-4 space-y-2">
 
         {services.map((service) => (
           <FormField

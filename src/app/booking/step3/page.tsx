@@ -4,6 +4,8 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useEffect, useContext } from "react";
+import { NavigationContext } from '@/context/NavigationContext';
 
 type SummaryProps = {
   venueName: string;
@@ -15,6 +17,11 @@ type SummaryProps = {
 };
 
 export default function Summary() {
+  const navContext = useContext(NavigationContext)
+    
+      useEffect(() => {
+        navContext.setTitle("Summary")
+      }, [navContext.title])
     const summary = {
         venueName: "Golden Touch Spa",
         date: '27 04 1989',
