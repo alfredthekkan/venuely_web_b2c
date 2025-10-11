@@ -7,14 +7,15 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area" // 👈 Impo
 import { getNextTwoWeeksDates } from "@/lib/dateutils" // Re-using the utility function
 
 interface BookingDateSelectorProps {
-  onDateSelect: (dateString: string) => void
-  selectedDate: string | null
+  onDateSelect: (date: Date) => void
+  selectedDate: Date
 }
 
 export function BookingDateSelector({ onDateSelect, selectedDate }: BookingDateSelectorProps) {
+
   const dates = React.useMemo(() => getNextTwoWeeksDates(), [])
 
-  const handleSelect = (dateValue: string) => {
+  const handleSelect = (dateValue: Date) => {
     onDateSelect(dateValue)
   }
 
@@ -30,8 +31,8 @@ export function BookingDateSelector({ onDateSelect, selectedDate }: BookingDateS
               key={dateObj.value}
               // Set minimum width for consistency
               className="h-auto w-20 flex-shrink-0 px-2 py-3" 
-              variant={selectedDate === dateObj.value ? "default" : "outline"}
-              onClick={() => handleSelect(dateObj.value)}
+              variant={selectedDate.getDate() === dateObj.date.getDate()? "default" : "outline"}
+              onClick={() => handleSelect(dateObj.date)}
             >
               <div className="flex flex-col items-center">
                 {/* Day of the week (e.g., Fri) */}

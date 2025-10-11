@@ -1,24 +1,23 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { useEffect  } from "react"
+import { TimeSlot } from "@/lib/api"
 
 interface TimeSlotPickerProps {
-  slots: string[]
-  onSelect: (slot: string) => void
-  disabled?: boolean
+  slots: TimeSlot[]
+  onSelect: (slot: TimeSlot, providerId: string) => void
+  disabled?: boolean,
+  selectedSlot: TimeSlot | null,
+  providerId: string
 }
 
-export function TimeSlotPicker({ slots, onSelect, disabled }: TimeSlotPickerProps) {
-  const [selectedSlot, setSelectedSlot] = React.useState<string | null>(null)
+export function TimeSlotPicker({ slots, onSelect, disabled, selectedSlot, providerId}: TimeSlotPickerProps) {
 
-  useEffect(() => {
-    console.log("changed slots")
-    setSelectedSlot(null)
-  }, [slots])
-
-  const handleSelect = (slot: string) => {
-    setSelectedSlot(slot)
-    onSelect(slot)
+  const handleSelect = (slot: TimeSlot) => {
+    console.log("slot clicked in time slot picker")
+    console.log(slot)
+    console.log(providerId)
+    onSelect(slot, providerId)
   }
 
   return (
@@ -27,12 +26,12 @@ export function TimeSlotPicker({ slots, onSelect, disabled }: TimeSlotPickerProp
       <div className="flex flex-wrap gap-2 p-4 border rounded-lg">
         {slots.map((slot) => (
           <Button
-            key={slot}
-            variant={selectedSlot === slot ? "default" : "outline"}
+            key={slot.start.toISOString()}
+            variant={selectedSlot?.start.toISOString() == slot.start.toISOString() ? "default" : "outline"}
             onClick={() => handleSelect(slot)}
             disabled={disabled}
           >
-            {slot}
+            {slot.start.to12hrTime()}
           </Button>
         ))}
       </div>

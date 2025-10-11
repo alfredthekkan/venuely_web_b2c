@@ -4,11 +4,12 @@ import { Form, FormField, FormItem, FormControl } from '@/components/ui/form';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useState, useContext, useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import { DefaultService, OpenAPI } from "@/lib/api";
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { BookingContext } from '@/context/BookingContext';
 import { NavigationContext } from '@/context/NavigationContext';
+import { useVenue } from '@/context/VenueContext';
+import { Service } from '@/lib/api';
 
 function ServiceSelectionForm() {
 
@@ -19,33 +20,24 @@ function ServiceSelectionForm() {
   }, [navContext.title])
 
   type FormValues = {
-    services: string[];
+    services: Service[];
   };
-
-  const services = [
-    { id: 'haircut', label: 'Hair Cut' },
-    { id: 'shampoo', label: 'Shampoo' },
-    { id: 'beardtrim', label: 'Beard Trim' },
-    { id: 'massage', label: 'Massage' },
-    { id: 'facial', label: 'Facial' },
-    { id: 'manicure', label: 'Manicure' },
-    { id: 'pedicure', label: 'Pedicure' },
-  ]
 
   const router = useRouter();
   const context = useContext(BookingContext);
+  const venueContext = useVenue()
   
   const onSubmit: SubmitHandler<FormValues> =  async (data: FormValues) => {
-    OpenAPI.BASE = "https://2bfdc92c-3826-4fe5-847d-bd37d96b59ec.mock.pstmn.io/";
-    const requestBody = { date: "2025-09-30", serviceIds: data.services };
-    const slots = await DefaultService.postBookingsSlots(requestBody);
-    console.log("Available slots:", slots);
+    const selection = data.services.map((service) => service.title ?? '')
+    console.log(selection)
+    if (context.booking) {
+      const updatedBooking = {...context.booking, services: data.services};
+      context.setBooking(updatedBooking);
+    }else {
+      context.setBooking({venue_id: venueContext?.venue?.venueId ?? "", venue_name: venueContext.venue?.title ?? '', services: data.services, date: null, time: null})
+    }
     
-    
-    const updatedBooking = {...context.booking, services: data.services};
-    context.setBooking(updatedBooking);
-
-    router.push("/booking/step2");
+    router.push(`/venue/${venueContext?.venue?.venueId ?? ""}/booking/step2`);
   };
 
   const form = useForm<FormValues>({
@@ -58,25 +50,25 @@ function ServiceSelectionForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="m-4 space-y-2">
 
-        {services.map((service) => (
+        {venueContext?.venue?.services && venueContext?.venue?.services.map((service) => (
           <FormField
-            key={service.id}
+            key={service.serviceId}
             control={form.control}
             name="services"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-3 space-y-0">
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <Checkbox
-                    checked={field.value?.includes(service.label)}
+                    checked={field.value?.some((s) => service.serviceId == s.serviceId)}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        field.onChange([...(field.value || []), service.label]);
+                        field.onChange([...(field.value || []), service]);
                       } else {
-                        field.onChange(field.value?.filter((value) => value !== service.label));
+                        field.onChange(field.value?.filter((value) => value.serviceId != service.serviceId));
                       }
                     }}
                   />
-                  <span>{service.label}</span>
+                  <span>{service.title}</span>
                 </label>
               </FormItem>
             )}

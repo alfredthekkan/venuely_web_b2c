@@ -10,7 +10,7 @@ import { FormEvent, useEffect, useState, useTransition } from 'react'
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
 import { Input  } from './ui/input';
 import { Button } from './ui/button';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function OtpLogin() {
     const router = useRouter()
@@ -46,6 +46,8 @@ export default function OtpLogin() {
         }
     }, [otp])
 
+    const searchParams = useSearchParams()
+
     const verifyOtp = async () => {
         startTransition(async () => {
             setError("")
@@ -56,9 +58,18 @@ export default function OtpLogin() {
 
             try {
                 await confirmationResult.confirm(otp);
-                router.replace("/home")
+                
+                if (searchParams.get('redirect')) {
+                    const route = searchParams.get('redirect') 
+                    console.log(route)
+                    router.push(route!)
+                    console.log("No exception occured")
+                }else {
+                    console.log("No redirect found!")
+                    router.push("/home")
+                }
             }catch(error) {
-                setError("Failed to verify the otp. please check otp first.")
+                setError(`Failed to verify the otp. please check otp first.${error}`)
             }
         }
         )

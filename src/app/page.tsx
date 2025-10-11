@@ -15,16 +15,19 @@ export default function NewBooking() {
     router.push("/tuts");
   };
 
+  const handleVenue = () => {
+    router.push("/venue/G8zjL37Xj53pwrNFbAFv")
+  }
+
   const handleOTPLogin = () => router.push("/home")
   
   return (
-    <AuthProvider>
       <div className="flex gap-4 m-4">
         <Button onClick={handleClick}>New Booking</Button>
         <Button onClick={handleContextLearn}>Learn Context</Button>
         <Button onClick={handleOTPLogin}>Try OTP Login</Button>
+        <Button onClick={handleVenue}>Thach Bro Carpentry works</Button>
         </div>
-    </AuthProvider>
   );
 }
 

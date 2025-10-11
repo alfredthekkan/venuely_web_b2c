@@ -1,159 +1,214 @@
 openapi: 3.0.3
-info:
-  title: Venuely Booking API
-  description: API for managing bookings in the Venuely system.
+info: 
+  title: Venuely Booking Widget Api 
+  description: Api collection for making a booking
   version: 1.0.0
 paths:
-  /bookings:
+  /venue:
+    get: 
+      summary: Retrieve a venue with basic details
+      tags:
+        - booking_widget
+      operationId: getVenueDetails
+      parameters:
+        - name: venueId
+          schema:
+            type: string
+          in: query
+          required: true
+          description: The unique Id of the venue
+      responses: 
+        '200':
+          description: Venue with basic details 
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Venue'
+        '404':
+          description: Venue not found  
+  /slots:
     get:
-      summary: Retrieve a list of bookings
+      summary: Retrieves a list of slots available for booking
+      tags:
+        - booking_widget
+      operationId: getAvailableSlots
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: venueId
+          schema: 
+            type: string
+          in: query
+          required: true
+          description: The unique id of the venue
+        - name: serviceIds
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: true
+          style: form
+          explode: true 
+        - name: date 
+          schema:
+            type: string
+            format: date
+          in: query
+          required: true
+          example: "2025-12-30"
       responses:
         '200':
-          description: A list of bookings
+          description: List of slots available for the selected venue, date and servcies 
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Booking'
+                  $ref: '#/components/schemas/TimeSlotProvider'
+  /reservation:
     post:
-      summary: Create a new booking
+      summary: Creates a new reservation 
+      tags:
+        - booking_widget
+      operationId: createReservation
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Booking'
-      responses:
-        '201':
-          description: Booking created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
-  /bookings/{bookingId}:
-    get:
-      summary: Retrieve a specific booking by ID
-      parameters:
-        - name: bookingId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: A single booking
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
-        '404':
-          description: Booking not found
-    put:
-      summary: Update a specific booking by ID
-      parameters:
-        - name: bookingId
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Booking'
-      responses:
-        '200':
-          description: Booking updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
-        '404':
-          description: Booking not found
-    delete:
-      summary: Delete a specific booking by ID
-      parameters:
-        - name: bookingId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Booking deleted successfully
-        '404':
-          description: Booking not found
-  /bookings/slots:
-    post:
-      summary: Retrieve available booking slots
-      requestBody:
-        required: true
-        content:
+        content: 
           application/json:
             schema:
               type: object
               properties:
-                date:
+                venue_id:
                   type: string
-                  format: date
-                  description: Date for which to retrieve available slots
-                serviceIds:
+                venue_name:
+                  type: string
+                staff_id:
+                  type: string
+                service_ids:
                   type: array
                   items:
                     type: string
-                  description: List of service IDs to filter available slots
-              required:
-                - date
-                - serviceIds
-      responses:
-        '200':
-          description: A list of available booking slots
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
+                start_date:
                   type: string
-                  format: time
+                  format: date-time
+                end_date:
+                  type: string
+                  format: date-time
+                guest_name:
+                  type: string
+                guest_notes:
+                  type: string
+              required:
+              - venue_id
+              - staff_id
+              - venue_name
+              - service_ids
+              - start_date
+              - end_date
+      responses:
+        '201':
+          description: Reservation successfully created!
+          
 components:
   schemas:
-    Slot:
+    TimeSlotProvider:
       type: object
       properties:
-        time:
+        provider_id:
           type: string
-          format: time
-          description: Available time slot
+          description: The id of the service provider 
+        provider_name:
+          type: string
+          description: The name to be displayed in b2c apps for provider
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSlot'
       required:
-        - time
-    Booking:
+        - provider_id
+        - provider_name
+        - slots
+    TimeSlot:
       type: object
       properties:
-        id:
+        start:
           type: string
-          description: Unique identifier for the booking
-        venue:
+          format: date-time
+          description: The start date of the time slot 
+        end:
           type: string
-          description: Name of the venue
-        date:
-          type: string
-          format: date
-          description: Date of the booking
-        time:
-          type: string
-          description: Time of the booking
-        customerName:
-          type: string
-          description: Name of the customer
-        customerEmail:
-          type: string
-          format: email
-          description: Email of the customer
+          format: date-time
+          description: The end date of the time slot 
       required:
-        - venue
-        - date
-        - time
-        - customerName
-        - customerEmail
+        - start
+        - end
+    Service:
+      type: object
+      properties:
+        service_id:
+          type: string
+          description: The id of the service
+        title:
+          type: string
+          description: The name of the service
+        amount: 
+          type: number
+          description: The amount for the service
+        gender: 
+          type: string
+          description: The gender for which the service is provided
+          enum:
+            - male
+            - female
+            - unisex
+        duration_in_minutes:
+          type: number
+          description: The time required to finish the service
+      required:
+        - service_id
+        - title
+    Venue:
+      type: object
+      properties:
+        venue_id: 
+          type: string
+          description: The id of the venue
+        title: 
+          type: string
+          description: The name of the Venue
+        description:
+          type: string
+          description: A short description about the type of venue, services offerred
+        thumb_nail_url:
+          type: string
+          format: uri
+          description: The url of the thumbnail image of the venue
+        phone_number:
+          type: string
+          description: Phone number 
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+      required:
+        - venue_id
+        - title
+  securitySchemes:
+    bearerAuth:
+      type: http 
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+  - name: booking_widget
+    description: venuely booking widget 
+  - name: whatsapp
+    description: whatsapp flows api 
+  - name: b2b
+servers:
+  - url: https://firebase-entrypoint-kfvk76r6nq-uc.a.run.app
+    description: uat server 
+  - url: https://firebase-entrypoint-pfgu2skrmq-uc.a.run.app
+    description: prod server

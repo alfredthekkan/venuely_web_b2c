@@ -1,30 +1,31 @@
 "use client";
+import { Service, Venue } from '@/lib/api';
 import { createContext } from 'react'
 
-type BookingModel = {
-    venueName: string,
-    venueId: string,
-    services: string[],
-    date: Date,
-    time: Date
-}
-
-export const defaultBooking: BookingModel = {
-    venueName: "Golden Touch Spa",
-    venueId: "WSK343D",
-    services: [],
-    date: new Date(),
-    time: new Date()
+export type BookingModel = {
+    venue_id: string,
+    venue_name: string,
+    services: Service[],
+    providerId: string | null,
+    providerName: string | null,
+    start: Date | null,
+    end: Date | null,
+    guest_name: string,
+    guest_notes?: string
 }
 
 type BookingContextType = {
-    booking: BookingModel,
-    setBooking: (data: BookingModel) => void
+    booking: BookingModel | null,
+    setBooking: (data: BookingModel | null) => void
+    venue: Venue | null, 
+    setVenue: (data: Venue | null) => void
 }
 
 const defaultContext: BookingContextType = {
-    booking: defaultBooking,
-    setBooking: (data) => { console.log(data.venueName)}
+    booking: null,
+    setBooking: (data) => {},
+    venue: null,
+    setVenue: (data) => {}
 }
 
 export const BookingContext = createContext(defaultContext);

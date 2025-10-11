@@ -20,3 +20,20 @@ export const getNextTwoWeeksDates = () => {
   }
   return dates;
 };
+
+// Extend the Date interface to include to12hrTime
+declare global {
+  interface Date {
+    to12hrTime(): string;
+  }
+}
+
+Date.prototype.to12hrTime = function() {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric', // Use 'numeric' for 1-12 hours, '2-digit' for 01-12
+    minute: 'numeric', // Use 'numeric' for 0-59 minutes, '2-digit' for 00-59
+    hour12: true // Set to true for AM/PM format
+  });
+
+  return formatter.format(this);
+}
