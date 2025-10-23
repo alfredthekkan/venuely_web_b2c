@@ -134,13 +134,16 @@ export default function TimeSlotSelector() {
       <hr className="my-6 border-t border-muted" />
 
       {/* 3. Confirmation Button */}
-      <Button 
-        onClick={handleBooking} 
-        disabled={!isBookingComplete || isBookingLoading} 
-        className="w-full h-12 text-lg"
-      >
-        Confirm {selectedSlot && selectedSlot.start.to12hrTime()}
-      </Button>
+      <div className="fixed bottom-0 left-0 right-0 p-4 border-t bg-white shadow-lg max-w-lg mx-auto">
+        <Button 
+          onClick={handleBooking} 
+          disabled={!isBookingComplete || isBookingLoading} 
+          className="w-full h-12 text-lg  bg-emerald-600 hover:bg-emerald-700"
+        >
+          Confirm {selectedSlot && selectedSlot.start.to12hrTime()}
+        </Button>
+      </div>
+      
     </div>
   )
 }

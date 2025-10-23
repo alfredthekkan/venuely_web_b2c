@@ -6,18 +6,10 @@ import { useContext } from "react";
 function Navbar() {
   const context = useContext(NavigationContext)
   return (
-    <div className="flex flex-row items-center justify-between bg-green-100">
-      <div className="p-4 font-bold text-lg">
-        <h1> </h1>
+    <div className="fixed right-0 left-0 flex flex-row items-center justify-between bg-green-100">
+      <div className="flex w-full bg-emerald-700  justify-around p-4 font-semibol items-centerd">
+        <h1 className="text-white font-bold">{context.title}</h1>
       </div>
-      <div className="p-4 font-semibold">
-        <h1>{context.title}</h1>
-      </div>
-
-    <Link href="/booking/step1" className="text-green-800 p-4 font-semibold opacity-90">
-        More Services
-    </Link>
-
     </div>
   );    
 }

@@ -30,6 +30,11 @@ export function TimeSlotPicker({ slots, onSelect, disabled, selectedSlot, provid
             variant={selectedSlot?.start.toISOString() == slot.start.toISOString() ? "default" : "outline"}
             onClick={() => handleSelect(slot)}
             disabled={disabled}
+            className={
+              selectedSlot?.start.toISOString() === slot.start.toISOString()
+                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                : "border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+            }
           >
             {slot.start.to12hrTime()}
           </Button>

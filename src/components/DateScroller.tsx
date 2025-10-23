@@ -30,7 +30,12 @@ export function BookingDateSelector({ onDateSelect, selectedDate }: BookingDateS
             <Button
               key={dateObj.value}
               // Set minimum width for consistency
-              className="h-auto w-20 flex-shrink-0 px-2 py-3" 
+              className={`h-auto w-20 flex-shrink-0 px-2 py-3 transition-colors
+                ${
+                  selectedDate.getDate() === dateObj.date.getDate()
+                    ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                    : "border border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                }`}
               variant={selectedDate.getDate() === dateObj.date.getDate()? "default" : "outline"}
               onClick={() => handleSelect(dateObj.date)}
             >

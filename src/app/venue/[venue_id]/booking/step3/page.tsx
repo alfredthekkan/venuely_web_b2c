@@ -95,7 +95,7 @@ React.useEffect(() => {
     }
 }, []); // Run only once on mount}
 
-
+console.log('start value:', bookingContext.booking?.start);    
   const summary = {
       venueName: bookingContext.booking?.venue_name,
       start: bookingContext.booking?.start?.toDateString() ?? '',
@@ -213,9 +213,13 @@ function BookingSummary({
         </CardContent>
 
         <CardFooter>
-          <Button className="w-full" onClick = {() => handleClick()}>Confirm Booking</Button>
         </CardFooter>
       </Card>
+
+      {/* CTA at the bottom */}
+            <div className="fixed bottom-0 left-0 right-0 p-4 border-t bg-white shadow-lg max-w-lg mx-auto">
+              <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700" onClick = {() => handleClick()}>Confirm Booking</Button>
+            </div>
     </div>
   );
 }
