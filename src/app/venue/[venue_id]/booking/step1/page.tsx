@@ -16,7 +16,7 @@ import { Card, CardContent } from "@/components/ui/card"
 
 export default function MoreServicesScreen() {
   const [selectedServices, setSelectedServices] = useState<Set<Service>>(new Set());
-  const { venue, setVenue } = useVenue()
+  const { venueResponse, setVenueResponse } = useVenue()
 
   const handleServiceSelect = (service: Service, isSelected: boolean) => {
     setSelectedServices(prev => {
@@ -47,8 +47,8 @@ export default function MoreServicesScreen() {
       context.setBooking(updatedBooking);
     }else {
       context.setBooking({
-        venue_id: venue?.venueId ?? "", 
-        venue_name: venue?.title ?? '', 
+        venue_id: venueResponse?.venue?.id ?? "", 
+        venue_name: venueResponse?.venue?.contactDetails?.name ?? '', 
         services: services, 
         providerId: null,
         providerName: null,
@@ -56,10 +56,10 @@ export default function MoreServicesScreen() {
         end: null,
         guest_name: '',
         guest_notes: ''
-      })   
+      });
     }
 
-    router.push(`/venue/${venue?.venueId ?? ""}/booking/step2`);
+    router.push(`/venue/${venueResponse?.venue?.id ?? ""}/booking/step2`);
   };
 
   return (
@@ -67,10 +67,10 @@ export default function MoreServicesScreen() {
       <Card className="max-w-md w-full shadow-lg border-none bg-white/90 backdrop-blur-md">
       <CardContent className="flex flex-col text-center space-y-6 p-6">
       {/* Service List */}
-      {venue?.services && <div className="space-y-3">
-        {venue?.services.map(service => (
+      {venueResponse?.services && <div className="space-y-3">
+        {venueResponse?.services.map(service => (
           <ServiceCard
-            key={service.serviceId}
+            key={service.id}
             service={service}
             isSelected={selectedServices.has(service)}
             onSelect={handleServiceSelect}

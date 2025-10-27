@@ -1,214 +1,246 @@
 openapi: 3.0.3
-info: 
-  title: Venuely Booking Widget Api 
-  description: Api collection for making a booking
-  version: 1.0.0
-paths:
-  /venue:
-    get: 
-      summary: Retrieve a venue with basic details
-      tags:
-        - booking_widget
-      operationId: getVenueDetails
-      parameters:
-        - name: venueId
-          schema:
-            type: string
-          in: query
-          required: true
-          description: The unique Id of the venue
-      responses: 
-        '200':
-          description: Venue with basic details 
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Venue'
-        '404':
-          description: Venue not found  
-  /slots:
-    get:
-      summary: Retrieves a list of slots available for booking
-      tags:
-        - booking_widget
-      operationId: getAvailableSlots
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: venueId
-          schema: 
-            type: string
-          in: query
-          required: true
-          description: The unique id of the venue
-        - name: serviceIds
-          schema:
-            type: array
-            items:
-              type: string
-          in: query
-          required: true
-          style: form
-          explode: true 
-        - name: date 
-          schema:
-            type: string
-            format: date
-          in: query
-          required: true
-          example: "2025-12-30"
-      responses:
-        '200':
-          description: List of slots available for the selected venue, date and servcies 
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TimeSlotProvider'
-  /reservation:
-    post:
-      summary: Creates a new reservation 
-      tags:
-        - booking_widget
-      operationId: createReservation
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content: 
-          application/json:
-            schema:
-              type: object
-              properties:
-                venue_id:
-                  type: string
-                venue_name:
-                  type: string
-                staff_id:
-                  type: string
-                service_ids:
-                  type: array
-                  items:
-                    type: string
-                start_date:
-                  type: string
-                  format: date-time
-                end_date:
-                  type: string
-                  format: date-time
-                guest_name:
-                  type: string
-                guest_notes:
-                  type: string
-              required:
-              - venue_id
-              - staff_id
-              - venue_name
-              - service_ids
-              - start_date
-              - end_date
-      responses:
-        '201':
-          description: Reservation successfully created!
-          
+info:
+  title: Firefly API
+  version: "1.0.0"
+servers:
+  - url: https://firebase-entrypoint-kfvk76r6nq-uc.a.run.app
+    description: UAT
+  - url: https://firebase-entrypoint-pfgu2skrmq-uc.a.run.app
+    description: Prod
+  - url: https://firebase-entrypoint-pfgu2skrmq-uc.a.run.app
+    description: Default
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
-    TimeSlotProvider:
-      type: object
-      properties:
-        provider_id:
-          type: string
-          description: The id of the service provider 
-        provider_name:
-          type: string
-          description: The name to be displayed in b2c apps for provider
-        slots:
-          type: array
-          items:
-            $ref: '#/components/schemas/TimeSlot'
-      required:
-        - provider_id
-        - provider_name
-        - slots
-    TimeSlot:
+    AvailabilitySlot:
       type: object
       properties:
         start:
           type: string
-          format: date-time
-          description: The start date of the time slot 
+          format: time
+          example: "09:00"
         end:
           type: string
-          format: date-time
-          description: The end date of the time slot 
+          format: time
+          example: "14:30"
+      required: [start, end]
+    BookableResourceAvailability:
+      type: object
+      properties:
+        provider_id:
+          type: string
+        provider_name:
+          type: string
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailabilitySlot'
+      required: [provider_id, provider_name, slots]
+    CreateReservationRequest:
+      type: object
+      properties:
+        venue_id: { type: string }
+        staff_id: { type: string }
+        booking_resource_name: { type: string }
+        start_date: { type: string, format: date-time }
+        end_date: { type: string, format: date-time }
+        service_ids:
+          type: array
+          items: { type: string }
+        status: { type: string, default: "not_confirmed" }
+        guest_id: { type: string, nullable: true }
+        guest_name: { type: string, default: "No Name" }
+        guest_notes: { type: string, nullable: true }
+        event_id: { type: string, nullable: true }
       required:
-        - start
-        - end
+        - venue_id
+        - staff_id
+        - booking_resource_name
+        - start_date
+        - end_date
+        - service_ids
+    CreateVenueRequest:
+      type: object
+      properties:
+        organisationName: { type: string }
+        timezoneId: { type: string, example: "Asia/Kolkata" }
+        user_id: { type: string, nullable: true }
+      required: [organisationName, timezoneId]
+    Phone:
+      type: object
+      properties:
+        code: { type: string }
+        number: { type: string }
+      required: [code, number]
+    ContactDetails:
+      type: object
+      properties:
+        address: { type: string }
+        name: { type: string }
+        phone:
+          $ref: '#/components/schemas/Phone'
+        timezoneId: { type: string }
+      required: [address, name, phone, timezoneId]
+    Subscription:
+      type: object
+      properties:
+        analytics: { type: boolean }
+        max_guests: { type: integer }
+        max_reservations: { type: integer }
+        max_stylists: { type: integer }
+        plan_id: { type: string }
+        plan_name: { type: string }
+        status: { type: string }
+      required: [analytics, max_guests, max_reservations, max_stylists, plan_id, plan_name, status]
+    Usage:
+      type: object
+      properties:
+        guests: { type: integer }
+        reservations: { type: integer }
+        services: { type: integer }
+        stylists: { type: integer }
+      required: [guests, reservations, services, stylists]
+    Venue:
+      type: object
+      description: Public venue shape returned by API (sensitive/internal fields omitted)
+      properties:
+        id: { type: string, nullable: true }
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        description: { type: string }
+        images:
+          type: array
+          items: { type: string, format: uri }
+        scan_name: { type: string }
+        thumbnail: { type: string, format: uri, nullable: true }
+      required:
+        - contactDetails
+        - description
+        - images
+        - scan_name
     Service:
       type: object
       properties:
-        service_id:
-          type: string
-          description: The id of the service
-        title:
-          type: string
-          description: The name of the service
-        amount: 
-          type: number
-          description: The amount for the service
-        gender: 
-          type: string
-          description: The gender for which the service is provided
-          enum:
-            - male
-            - female
-            - unisex
-        duration_in_minutes:
-          type: number
-          description: The time required to finish the service
-      required:
-        - service_id
-        - title
-    Venue:
+        id: { type: string, nullable: true }
+        amount: { type: integer }
+        durationInMinutes: { type: integer }
+        gender: { type: string }
+        isFrequentlyBooked: { type: boolean }
+        parent_service: { type: string }
+        title: { type: string }
+      required: [amount, durationInMinutes, gender, isFrequentlyBooked, parent_service, title]
+    VenueGetResponse:
       type: object
       properties:
-        venue_id: 
-          type: string
-          description: The id of the venue
-        title: 
-          type: string
-          description: The name of the Venue
-        description:
-          type: string
-          description: A short description about the type of venue, services offerred
-        thumb_nail_url:
-          type: string
-          format: uri
-          description: The url of the thumbnail image of the venue
-        phone_number:
-          type: string
-          description: Phone number 
+        venue:
+          $ref: '#/components/schemas/Venue'
         services:
           type: array
-          items:
-            $ref: '#/components/schemas/Service'
-      required:
-        - venue_id
-        - title
-  securitySchemes:
-    bearerAuth:
-      type: http 
-      scheme: bearer
-      bearerFormat: JWT
-tags:
-  - name: booking_widget
-    description: venuely booking widget 
-  - name: whatsapp
-    description: whatsapp flows api 
-  - name: b2b
-servers:
-  - url: https://firebase-entrypoint-kfvk76r6nq-uc.a.run.app
-    description: uat server 
-  - url: https://firebase-entrypoint-pfgu2skrmq-uc.a.run.app
-    description: prod server
+          items: { $ref: '#/components/schemas/Service' }
+      required: [venue, services]
+  responses:
+    BadRequest:
+      description: Bad request
+    Unauthorized:
+      description: Unauthorized
+    NotFound:
+      description: Not found
+    ServerError:
+      description: Server error
+paths:
+  /venue:
+    get:
+      summary: Get a venue with services
+      parameters:
+        - in: query
+          name: venueId
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VenueGetResponse' }
+        "400": { $ref: '#/components/responses/BadRequest' }
+        "404": { $ref: '#/components/responses/NotFound' }
+        "500": { $ref: '#/components/responses/ServerError' }
+  
+  /slots:
+    get:
+      summary: Get available time slots
+      parameters:
+        - in: query
+          name: venue_id
+          required: true
+          schema: { type: string }
+        - in: query
+          name: service_ids
+          required: true
+          description: Repeat param for multiple services
+          schema:
+            type: array
+            items: { type: string }
+          style: form
+          explode: true
+        - in: query
+          name: date
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/BookableResourceAvailability' }
+        "400": { $ref: '#/components/responses/BadRequest' }
+        "404": { $ref: '#/components/responses/NotFound' }
+        "500": { $ref: '#/components/responses/ServerError' }
+  
+  /reservation:
+    post:
+      summary: Create reservation
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateReservationRequest' }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservation_id: { type: string }
+                required: [reservation_id]
+        "400": { $ref: '#/components/responses/BadRequest' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "500": { $ref: '#/components/responses/ServerError' }
+  /frequentservices:
+    get:
+      summary: Get frequently booked services
+      parameters:
+        - in: query
+          name: venue_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Service' }
+        "400": { $ref: '#/components/responses/BadRequest' }
+        "500": { $ref: '#/components/responses/ServerError' }
+  

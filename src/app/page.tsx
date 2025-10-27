@@ -22,12 +22,12 @@ export default function NewBooking() {
   const handleOTPLogin = () => router.push("/home")
   
   return (
-      <div className="flex gap-4 m-4">
+      <div className="flex gap-4 m-4 pt-16">
         <Button onClick={handleClick}>New Booking</Button>
         <Button onClick={handleContextLearn}>Learn Context</Button>
         <Button onClick={handleOTPLogin}>Try OTP Login</Button>
         <Button onClick={handleVenue}>Thach Bro Carpentry works</Button>
-        </div>
+      </div>
   );
 }
 

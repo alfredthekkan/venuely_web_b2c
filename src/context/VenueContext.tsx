@@ -1,17 +1,17 @@
 "use client";
-import { Venue } from '@/lib/api'
+import { VenueGetResponse } from '@/lib/api'
 import { useContext, createContext, useState} from 'react'
 
 type VenueContextType = {
-    venue: Venue | null,
-    setVenue: (data: Venue | null) => void
+    venueResponse: VenueGetResponse | null,
+    setVenueResponse: (data: VenueGetResponse | null) => void
 }
 
-const VenueContext = createContext<VenueContextType>({venue: null, setVenue: (data: Venue | null) => console.log(data?.title ?? '')})
+const VenueContext = createContext<VenueContextType>({venueResponse: null, setVenueResponse: (data: VenueGetResponse | null) => console.log(data?.venue.contactDetails.name ?? '')})
 
 export function VenueProvider({ children } : { children: React.ReactNode}) {
-    const [venue, setVenue] = useState<Venue | null>(null)
-    return <VenueContext.Provider value={{venue: venue, setVenue: setVenue}}>
+    const [venueResponse, setVenueResponse] = useState<VenueGetResponse | null>(null)
+    return <VenueContext.Provider value={{venueResponse: venueResponse, setVenueResponse: setVenueResponse}}>
         {children}
     </VenueContext.Provider>
 }

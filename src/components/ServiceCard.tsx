@@ -2,16 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { ServiceGenderEnum } from "@/lib/api";
-
-// 1. Define the props interface
-interface Service {
-  serviceId: string;
-  title: string;
-  durationInMinutes?: number; // Duration in minutes
-  amount?: number;
-  gender?: ServiceGenderEnum
-}
+import { Service } from "@/lib/api";
 
 interface ServiceCardProps {
   service: Service;
@@ -30,12 +21,12 @@ const formatCurrency = (amount: number): string => {
 };
 
 export function ServiceCard({ service, isSelected, onSelect }: ServiceCardProps) {
-  const { serviceId, title, durationInMinutes, amount, gender } = service;
+  const { id, title, durationInMinutes, amount, gender } = service;
 
-  const formattedCost = formatCurrency(amount ?? 0);
-  const formattedDuration = (durationInMinutes ?? 0) > 60 && (durationInMinutes ?? 0) % 60 === 0
-    ? `${(durationInMinutes ?? 0) / 60} Hour`
-    : `${durationInMinutes ?? 0} min`;
+  const formattedCost = formatCurrency(amount);
+  const formattedDuration = durationInMinutes > 60 && durationInMinutes % 60 === 0
+    ? `${durationInMinutes / 60} Hour`
+    : `${durationInMinutes} min`;
 
   const handleCheckboxChange = (checked: boolean) => {
     onSelect(service, checked);
@@ -54,7 +45,7 @@ export function ServiceCard({ service, isSelected, onSelect }: ServiceCardProps)
         
         {/* Left Side: Details */}
         <div className="flex flex-col space-y-1.5 flex-1">
-          <Label htmlFor={serviceId} className="text-lg font-semibold cursor-pointer leading-tight">
+          <Label htmlFor={id || 'service'} className="text-lg font-semibold cursor-pointer leading-tight">
             {title}
           </Label>
           
@@ -71,7 +62,7 @@ export function ServiceCard({ service, isSelected, onSelect }: ServiceCardProps)
         {/* Right Side: Checkbox */}
         <div className="flex items-center">
           <Checkbox
-            id={serviceId}
+            id={id || 'service'}
             checked={isSelected}
             onCheckedChange={handleCheckboxChange}
             className="h-6 w-6 data-[state=checked]:bg-emerald-500"

@@ -44,7 +44,7 @@ export function SafeImage({
           className={`object-cover rounded-xl transition-opacity duration-500 ${
             loading ? "opacity-0" : "opacity-100"
           } ${className}`}
-          onLoadingComplete={() => setLoading(false)}
+          onLoad={() => setLoading(false)}
           onError={() => {
             setLoading(false);
             setError(true);

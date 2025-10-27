@@ -1,19 +1,27 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { useEffect  } from "react"
-import { TimeSlot } from "@/lib/api"
+import { AvailabilitySlot } from "@/lib/api"
+
+// Helper function to format time string to 12-hour format
+const formatTime12Hr = (timeString: string): string => {
+  const [hours, minutes] = timeString.split(':').map(Number);
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  return `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+};
 
 interface TimeSlotPickerProps {
-  slots: TimeSlot[]
-  onSelect: (slot: TimeSlot, providerId: string) => void
+  slots: AvailabilitySlot[]
+  onSelect: (slot: AvailabilitySlot, providerId: string) => void
   disabled?: boolean,
-  selectedSlot: TimeSlot | null,
+  selectedSlot: AvailabilitySlot | null,
   providerId: string
 }
 
 export function TimeSlotPicker({ slots, onSelect, disabled, selectedSlot, providerId}: TimeSlotPickerProps) {
 
-  const handleSelect = (slot: TimeSlot) => {
+  const handleSelect = (slot: AvailabilitySlot) => {
     console.log("slot clicked in time slot picker")
     console.log(slot)
     console.log(providerId)
@@ -26,17 +34,17 @@ export function TimeSlotPicker({ slots, onSelect, disabled, selectedSlot, provid
       <div className="flex flex-wrap gap-2 p-4 border rounded-lg">
         {slots.map((slot) => (
           <Button
-            key={slot.start.toISOString()}
-            variant={selectedSlot?.start.toISOString() == slot.start.toISOString() ? "default" : "outline"}
+            key={slot.start}
+            variant={selectedSlot?.start === slot.start ? "default" : "outline"}
             onClick={() => handleSelect(slot)}
             disabled={disabled}
             className={
-              selectedSlot?.start.toISOString() === slot.start.toISOString()
+              selectedSlot?.start === slot.start
                 ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                 : "border-emerald-600 text-emerald-600 hover:bg-emerald-50"
             }
           >
-            {slot.start.to12hrTime()}
+            {formatTime12Hr(slot.start)}
           </Button>
         ))}
       </div>

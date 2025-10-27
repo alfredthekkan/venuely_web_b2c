@@ -8,10 +8,8 @@ import { useEffect, useContext } from "react";
 import { NavigationContext } from '@/context/NavigationContext';
 import { useAuth } from "@/context/AuthContext";
 import { BookingContext, BookingModel } from "@/context/BookingContext";
-import { BookingWidgetApi, Configuration, CreateReservationRequest, Service, Venue } from "@/lib/api";
+import { DefaultApi, Configuration, CreateReservationRequest, Service, ReservationPostRequest } from "@/lib/api";
 import { useVenue } from "@/context/VenueContext";
-import { start } from "repl";
-import { CreateReservationOperationRequest } from "@/lib/api";
 
 type SummaryProps = {
   venueName?: string;
@@ -78,7 +76,7 @@ function retrieveBookingModel(): BookingModel | null {
 export default function Summary() {
   const navContext = useContext(NavigationContext)
   const bookingContext = useContext(BookingContext)
-  const { venue } = useVenue()
+  const { venueResponse } = useVenue()
   useEffect(() => {
     navContext.setTitle("Summary")
   }, [navContext.title])
@@ -99,7 +97,7 @@ console.log('start value:', bookingContext.booking?.start);
   const summary = {
       venueName: bookingContext.booking?.venue_name,
       start: bookingContext.booking?.start?.toDateString() ?? '',
-      end: bookingContext.booking?.end?.to12hrTime() ?? '',
+      end: bookingContext.booking?.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) ?? '',
       services: bookingContext.booking?.services ?? [],
       totalCost: bookingContext.booking?.services.reduce((prev, curr, index, arr) => {
         return prev + (curr.amount ?? 0)
@@ -132,9 +130,9 @@ function BookingSummary({
       }
       const requestParams: CreateReservationRequest = {
         venueId: venue_id ?? '',
-        venueName: venueName ?? '',
         staffId: bookingContext.booking.providerId,
-        serviceIds: bookingContext.booking?.services.map((s) => s.serviceId) ?? '',
+        bookingResourceName: 'Default Resource',
+        serviceIds: bookingContext.booking?.services.map((s) => s.id ?? '') ?? [],
         startDate: bookingContext.booking?.start,
         endDate: bookingContext.booking?.end,
         guestName: 'No name',
@@ -145,8 +143,9 @@ function BookingSummary({
         // CALL THE GENERATED FUNCTION
         const token = await user?.getIdToken(true)
         const config = new Configuration({accessToken: token ?? ''})
-        const bookingApi = new BookingWidgetApi(config)
-        const result = await bookingApi.createReservation({createReservationRequest: requestParams});
+        const bookingApi = new DefaultApi(config)
+        const reservationRequest: ReservationPostRequest = { createReservationRequest: requestParams }
+        const result = await bookingApi.reservationPost(reservationRequest);
         console.log("successfully created reservation")
         router.push(`/venue/${venue_id}/booking/step4`);
       } catch (err) {
