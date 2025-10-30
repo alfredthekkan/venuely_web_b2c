@@ -22,9 +22,7 @@ const eslintConfig = [
   },
 ];
 
-import { defineConfig } from 'eslint-define-config';
-
-export default defineConfig([
+export default [
   {
     extends: ['next/core-web-vitals', 'next/typescript'],
     rules: {
@@ -34,4 +32,4 @@ export default defineConfig([
       'react-hooks/exhaustive-deps': 'warn'
     }
   },
-]);
+];

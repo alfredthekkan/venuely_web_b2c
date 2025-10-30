@@ -1,5 +1,6 @@
 import OtpLogin from "../../components/OtpLogin";
 import { Card, CardContent } from "@/components/ui/card";
+import { Suspense } from "react";
 
 export default function PhoneAuthForm() {
     return (
@@ -12,7 +13,9 @@ export default function PhoneAuthForm() {
                     borderColor: 'hsl(var(--brand-border))'
                 }}>
                     <CardContent className="pt-6">
-                        <OtpLogin/>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <OtpLogin/>
+                        </Suspense>
                     </CardContent>
                 </Card>
             </div>
