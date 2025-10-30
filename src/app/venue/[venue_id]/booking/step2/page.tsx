@@ -9,6 +9,7 @@ import { BookingDateSelector } from '@/components/DateScroller';
 import { useVenue } from '@/context/VenueContext';
 import { DefaultApi, SlotsGetRequest, BookableResourceAvailability, AvailabilitySlot } from '@/lib/api';
 import { getNextTwoWeeksDates } from '@/lib/dateutils';
+// Removed old style imports - now using CSS variables directly
 
 // Helper function to format time string to 12-hour format
 const formatTime12Hr = (timeString: string): string => {
@@ -128,46 +129,59 @@ export default function TimeSlotSelector() {
   }
 
   return (
-    <div className="space-y-8 max-w-lg mx-auto p-6 bg-background shadow-2xl rounded-xl border mt-4">
-      
-      {/* 1. Date Selection */}
-      <BookingDateSelector 
-        onDateSelect={handleDateSelect} 
-        selectedDate={selectedDate}
-      />
+    <div className="min-h-screen flex flex-col justify-start p-4 pb-20 pt-8" style={{
+      backgroundColor: 'hsl(var(--brand-background))'
+    }}>
+      <div className="border shadow-xl backdrop-blur-sm rounded-lg space-y-8 mx-4 p-6 mt-4" style={{
+        backgroundColor: 'hsl(var(--background))',
+        borderColor: 'hsl(var(--brand-border))'
+      }}>
+        
+        {/* 1. Date Selection */}
+        <BookingDateSelector 
+          onDateSelect={handleDateSelect} 
+          selectedDate={selectedDate}
+        />
 
-      <hr className="my-6 border-t border-muted" />
+        <hr className="my-6 border-t" style={{ borderColor: 'hsl(var(--muted))' }} />
 
-      {/* 2. Time Slot Selection */}
-      {/* TimeSlotPicker needs to be defined - you can use the one from the previous response */}
-      {providers.length > 0 && 
+        {/* 2. Time Slot Selection */}
+        {/* TimeSlotPicker needs to be defined - you can use the one from the previous response */}
+        {providers.length > 0 && 
 
-        providers.map((provider) => {
+          providers.map((provider) => {
 
-          const timeSlots = provider.slots ?? []
-          return <div key={provider.providerId}>
-          <h1 className='font-semibold mt-2 mb-2 text-2xl'>{provider.providerName}</h1>
-          <TimeSlotPicker 
-            slots={timeSlots} 
-            onSelect={handleTimeSlotSelection} 
-            // Disable time selection until a date is chosen
-            disabled={!selectedDate} 
-            selectedSlot={selectedSlot}
-            providerId={provider.providerId ?? ''}     
-          />
-        </div>
+            const timeSlots = provider.slots ?? []
+            return <div key={provider.providerId}>
+            <h1 className='font-semibold mt-2 mb-2 text-2xl' style={{ color: 'hsl(var(--foreground))' }}>{provider.providerName}</h1>
+            <TimeSlotPicker 
+              slots={timeSlots} 
+              onSelect={handleTimeSlotSelection} 
+              // Disable time selection until a date is chosen
+              disabled={!selectedDate} 
+              selectedSlot={selectedSlot}
+              providerId={provider.providerId ?? ''}     
+            />
+          </div>
+          }
+          )
         }
-        )
-      }
-      
-      <hr className="my-6 border-t border-muted" />
+        
+        <hr className="my-6 border-t" style={{ borderColor: 'hsl(var(--muted))' }} />
+      </div>
 
       {/* 3. Confirmation Button */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 border-t bg-white shadow-lg max-w-lg mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 p-4 max-w-lg mx-auto" style={{
+        backgroundColor: 'hsl(var(--brand-background))'
+      }}>
         <Button 
           onClick={handleBooking} 
           disabled={!isBookingComplete || isBookingLoading} 
-          className="w-full h-12 text-lg  bg-emerald-600 hover:bg-emerald-700"
+          className="font-semibold shadow-lg transition-colors duration-200 w-full h-12 text-lg"
+          style={{
+            backgroundColor: 'hsl(var(--brand-button-primary))',
+            color: 'hsl(var(--brand-button-primary-foreground))'
+          }}
         >
           Confirm {selectedSlot && `${formatTime12Hr(selectedSlot.start)} - ${formatTime12Hr(selectedSlot.end)}`}
         </Button>

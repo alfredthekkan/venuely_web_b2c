@@ -51,8 +51,8 @@ const result = await bookingApi.getVenueDetails(requestParams);
 - Available components: Button, Card, Checkbox, Form, Input, Label, Skeleton, Tabs, etc.
 - Custom `SafeImage` component auto-handles loading/error states (use instead of Next.js Image)
 - Mobile-first responsive design with fixed bottom CTAs
-- Consistent emerald theme: `bg-emerald-600 hover:bg-emerald-700`
-- Gradient backgrounds: `bg-gradient-to-br from-white to-emerald-500`
+- **Luxury Black & Gold theme**: `bg-brand-500 hover:bg-brand-600` (gold), `bg-brand-black text-brand-500` (black with gold text)
+- **Premium gradients**: `bg-gradient-to-br from-brand-charcoal via-brand-900 to-brand-700`
 
 ### Routing Structure
 ```
@@ -86,4 +86,5 @@ npm run build --turbopack # Production build
 ## Mobile-First Design
 - Max width containers: `max-w-md` or `max-w-xs`
 - Fixed bottom CTAs with backdrop blur: `bg-white/80 backdrop-blur-md`
-- Card layouts with emerald accent colors: `bg-emerald-600 hover:bg-emerald-700`
+- **Luxury card layouts**: `bg-brand-500 hover:bg-brand-600 text-brand-black` (gold buttons), `bg-brand-black text-brand-500 border-brand-500` (black containers)
+- **Premium backgrounds**: `bg-gradient-to-br from-brand-charcoal via-brand-900 to-brand-700`

@@ -24,14 +24,19 @@ export default function RootLayout({
 }>) {
       const [title, setTitle] = useState("Home")
 return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex flex-col min-h-screen">
+    <html lang="en" style={{ backgroundColor: 'hsl(var(--brand-background))' }}>
+      <body 
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ backgroundColor: 'hsl(var(--brand-background))' }}
+      >
+        <div className="flex flex-col min-h-screen" style={{ backgroundColor: 'hsl(var(--brand-background))' }}>
           <NavigationContext.Provider value={{title, setTitle}}>  
             <Navbar/>
-            <AuthProvider>
-                {children}
-            </AuthProvider>
+            <main className="pt-16" style={{ backgroundColor: 'hsl(var(--brand-background))' }}>
+              <AuthProvider>
+                  {children}
+              </AuthProvider>
+            </main>
           </NavigationContext.Provider>
         </div>
       </body>

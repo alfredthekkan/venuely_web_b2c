@@ -21,21 +21,31 @@ export function BookingDateSelector({ onDateSelect, selectedDate }: BookingDateS
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">📅 Select a Date (Next 14 Days)</h3>
-      
       {/* ScrollArea for horizontal date selection */}
-      <ScrollArea className="w-full whitespace-nowrap rounded-md border p-2">
+      <ScrollArea className="w-full whitespace-nowrap rounded-md border p-2" style={{ borderColor: 'hsl(var(--brand-border))' }}>
         <div className="flex w-max space-x-2 p-1">
           {dates.map((dateObj) => (
             <Button
               key={dateObj.value}
               // Set minimum width for consistency
-              className={`h-auto w-20 flex-shrink-0 px-2 py-3 transition-colors
-                ${
-                  selectedDate.getDate() === dateObj.date.getDate()
-                    ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                    : "border border-emerald-600 text-emerald-600 hover:bg-emerald-50"
-                }`}
+              className="h-auto w-20 flex-shrink-0 px-2 py-3 transition-colors"
+              style={
+                selectedDate.getDate() === dateObj.date.getDate()
+                  ? {
+                      backgroundColor: 'hsl(var(--brand-primary))',
+                      color: 'hsl(var(--brand-primary-foreground))',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: 'hsl(var(--brand-border))'
+                    }
+                  : {
+                      backgroundColor: 'transparent',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: 'hsl(var(--brand-border))',
+                      color: 'hsl(var(--brand-primary))'
+                    }
+              }
               variant={selectedDate.getDate() === dateObj.date.getDate()? "default" : "outline"}
               onClick={() => handleSelect(dateObj.date)}
             >

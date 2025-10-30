@@ -3,13 +3,17 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { NavigationContext } from '@/context/NavigationContext';
 import { useAuth } from "@/context/AuthContext";
 import { BookingContext, BookingModel } from "@/context/BookingContext";
 import { DefaultApi, Configuration, CreateReservationRequest, Service, ReservationPostRequest } from "@/lib/api";
 import { useVenue } from "@/context/VenueContext";
+import { MapPin, Calendar, Clock, Scissors, DollarSign, FileText, User, MessageSquare } from "lucide-react";
+// Removed old style imports - now using CSS variables directly
 
 type SummaryProps = {
   venueName?: string;
@@ -50,15 +54,19 @@ function retrieveBookingModel(): BookingModel | null {
         // 1. Parse the JSON string back into a storable object
         const storableData = JSON.parse(savedData);
 
-        // 2. Convert the ISO string back into a Date object
-        const restoredDate = storableData.date
-            ? new Date(storableData.date)
+        // 2. Convert the ISO strings back into Date objects
+        const restoredStartDate = storableData.start
+            ? new Date(storableData.start)
+            : null;
+        const restoredEndDate = storableData.end
+            ? new Date(storableData.end)
             : null;
 
         // 3. Reconstruct the BookingModel
         const bookingModel: BookingModel = {
             ...storableData,
-            date: restoredDate,
+            start: restoredStartDate,
+            end: restoredEndDate,
         };
 
         // Optional: Clear the storage immediately after retrieval if it's a one-time load
@@ -122,6 +130,7 @@ function BookingSummary({
     const { user } = useAuth()
     const bookingContext = useContext(BookingContext);
     const venue_id = bookingContext.booking?.venue_id
+    const [specialNotes, setSpecialNotes] = useState('')
 
     const submitBooking = async () => {
       if (!bookingContext.booking?.start || !bookingContext.booking.end || !bookingContext.booking.providerId) {
@@ -135,8 +144,8 @@ function BookingSummary({
         serviceIds: bookingContext.booking?.services.map((s) => s.id ?? '') ?? [],
         startDate: bookingContext.booking?.start,
         endDate: bookingContext.booking?.end,
-        guestName: 'No name',
-        guestNotes: 'No notes'
+        guestName: user?.displayName ?? 'Guest',
+        guestNotes: specialNotes || 'No special notes'
       };
 
       try {
@@ -167,58 +176,127 @@ function BookingSummary({
     }
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <Card className="p-6">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold text-center">
-            Booking Summary
-          </CardTitle>
-        </CardHeader>
+    <div className="min-h-[100vh] w-full flex flex-col justify-start p-4 pb-20 pt-8 relative" style={{
+      backgroundColor: 'hsl(var(--brand-background))'
+    }}>
+      <div className="flex justify-center px-4 mt-10">
+        <Card className="border shadow-xl backdrop-blur-sm rounded-lg p-6 w-full min-w-96 max-w-md" style={{
+          backgroundColor: 'hsl(var(--brand-background))',
+          borderColor: 'hsl(var(--brand-border))'
+        }}>
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-center" style={{ color: 'hsl(var(--foreground))' }}>
+              Booking Summary
+            </CardTitle>
+          </CardHeader>
 
-        <CardContent className="space-y-4">
-          <div>
-            <span className="font-semibold">Venue:</span> {venueName}
-          </div>
-
-          <div>
-            <span className="font-semibold">Date:</span> {start}
-          </div>
-
-          <div>
-            <span className="font-semibold">Time:</span> {end}
-          </div>
-
-          <div>
-            <span className="font-semibold">Services:</span>{" "}
-            {services.map((service) => service.title).join(", ")}
-          </div>
-
-          <div>
-            <span className="font-semibold">Total Cost:</span> ₹{totalCost}
-          </div>
-
-          {note && (
-            <div className="text-sm text-gray-600">
-              <span className="font-semibold">Note:</span> {note}
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-3" style={{ color: 'hsl(var(--foreground))' }}>
+              <MapPin className="h-5 w-5" style={{ color: 'hsl(var(--brand-primary))' }} />
+              <div>
+                <span className="font-semibold">Venue:</span> {venueName}
+              </div>
             </div>
-          )}
 
-          {user && (
-            <div className="text-sm text-gray-600">
-              <span className="font-semibold">You are logged in user id: { user.uid }</span> {note}
+            <div className="flex items-center space-x-3" style={{ color: 'hsl(var(--foreground))' }}>
+              <Calendar className="h-5 w-5" style={{ color: 'hsl(var(--brand-primary))' }} />
+              <div>
+                <span className="font-semibold">Date:</span> {start}
+              </div>
             </div>
-          )}
 
-        </CardContent>
+            <div className="flex items-center space-x-3" style={{ color: 'hsl(var(--foreground))' }}>
+              <Clock className="h-5 w-5" style={{ color: 'hsl(var(--brand-primary))' }} />
+              <div>
+                <span className="font-semibold">Time:</span> {end}
+              </div>
+            </div>
 
-        <CardFooter>
-        </CardFooter>
-      </Card>
+            <div className="flex items-start space-x-3" style={{ color: 'hsl(var(--foreground))' }}>
+              <Scissors className="h-5 w-5 mt-0.5" style={{ color: 'hsl(var(--brand-primary))' }} />
+              <div>
+                <span className="font-semibold">Services:</span>{" "}
+                {services.map((service) => service.title).join(", ")}
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-3" style={{ color: 'hsl(var(--foreground))' }}>
+              <DollarSign className="h-5 w-5" style={{ color: 'hsl(var(--brand-primary))' }} />
+              <div>
+                <span className="font-semibold">Total Cost:</span> ₹{totalCost}
+              </div>
+            </div>
+
+            {note && (
+              <div className="flex items-start space-x-3 text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                <FileText className="h-4 w-4 mt-0.5" style={{ color: 'hsl(var(--brand-primary))' }} />
+                <div>
+                  <span className="font-semibold">Note:</span> {specialNotes}
+                </div>
+              </div>
+            )}
+
+            {user && (
+              <div className="flex items-start space-x-3 text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                <User className="h-4 w-4 mt-0.5" style={{ color: 'hsl(var(--brand-primary))' }} />
+                <div>
+                  <span className="font-semibold">Booking for:</span> {user?.displayName || 'Guest'}
+                </div>
+              </div>
+            )}
+
+          </CardContent>
+
+          <CardFooter>
+          </CardFooter>
+        </Card>
+      </div>
+
+      {/* Special Notes Section */}
+      <div className="flex justify-center px-4 mt-6">
+        <Card className="border shadow-xl backdrop-blur-sm rounded-lg p-6 w-full min-w-96 max-w-md" style={{
+          backgroundColor: 'hsl(var(--brand-background))',
+          borderColor: 'hsl(var(--brand-border))'
+        }}>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-3" style={{ color: 'hsl(var(--foreground))' }}>
+              <MessageSquare className="h-5 w-5" style={{ color: 'hsl(var(--brand-primary))' }} />
+              <Label htmlFor="special-notes" className="font-semibold">
+                Special Notes (Optional)
+              </Label>
+            </div>
+            <Input
+              id="special-notes"
+              type="text"
+              placeholder="e.g., prefer window seat, no music, etc."
+              value={specialNotes}
+              onChange={(e) => setSpecialNotes(e.target.value)}
+              className="w-full"
+              style={{
+                backgroundColor: 'hsl(var(--brand-background))',
+                borderColor: 'hsl(var(--brand-border))',
+                color: 'hsl(var(--foreground))'
+              }}
+            />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* CTA at the bottom */}
-            <div className="fixed bottom-0 left-0 right-0 p-4 border-t bg-white shadow-lg max-w-lg mx-auto">
-              <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700" onClick = {() => handleClick()}>Confirm Booking</Button>
-            </div>
+      <div className="fixed bottom-0 left-0 right-0 p-4 max-w-lg mx-auto z-10" style={{
+        backgroundColor: 'hsl(var(--brand-background))'
+      }}>
+        <Button 
+          className="font-semibold shadow-lg transition-colors duration-200 w-full h-12"
+          style={{
+            backgroundColor: 'hsl(var(--brand-button-primary))',
+            color: 'hsl(var(--brand-button-primary-foreground))'
+          }}
+          onClick={() => handleClick()}
+        >
+          Confirm Booking
+        </Button>
+      </div>
     </div>
   );
 }

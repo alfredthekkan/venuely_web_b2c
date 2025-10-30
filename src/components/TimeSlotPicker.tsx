@@ -1,6 +1,5 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { useEffect  } from "react"
 import { AvailabilitySlot } from "@/lib/api"
 
 // Helper function to format time string to 12-hour format
@@ -30,18 +29,30 @@ export function TimeSlotPicker({ slots, onSelect, disabled, selectedSlot, provid
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Select a Time Slot</h3>
-      <div className="flex flex-wrap gap-2 p-4 border rounded-lg">
+      <div className="flex flex-wrap gap-2 p-4 border rounded-lg" style={{ 
+        borderColor: 'hsl(var(--brand-border))',
+        backgroundColor: 'hsl(var(--background))'
+      }}>
         {slots.map((slot) => (
           <Button
             key={slot.start}
             variant={selectedSlot?.start === slot.start ? "default" : "outline"}
             onClick={() => handleSelect(slot)}
             disabled={disabled}
-            className={
+            className="font-semibold transition-all duration-200"
+            style={
               selectedSlot?.start === slot.start
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : "border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                ? {
+                    backgroundColor: 'hsl(var(--brand-primary))',
+                    color: 'hsl(var(--brand-primary-foreground))',
+                    borderColor: 'hsl(var(--brand-border))',
+                    boxShadow: '0 0 0 2px hsl(var(--brand-ring))'
+                  }
+                : {
+                    borderColor: 'hsl(var(--brand-border))',
+                    color: 'hsl(var(--brand-primary))',
+                    backgroundColor: 'transparent'
+                  }
             }
           >
             {formatTime12Hr(slot.start)}

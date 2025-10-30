@@ -13,6 +13,8 @@ import { VenueGetResponse } from '@/lib/api/models/VenueGetResponse';
 import { useVenue } from '@/context/VenueContext';
 import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
+import { NavigationContext } from '@/context/NavigationContext';
+// Removed old style imports - now using CSS variables directly
 
 interface BookingHomeProps {
   title: string;
@@ -29,15 +31,25 @@ export function BookingHome({
 }: BookingHomeProps) {
   const router = useRouter();
   const [termsAccepted, setTermsAccepted] = useState(true);
-
+  const navContext = useContext(NavigationContext)
+  
   const handleBooking = () => {
     if (!termsAccepted) return;
     router.push(`/venue/${venue_id}/booking/step1`);
   };
 
+  useEffect(() => {
+      navContext.setTitle(title)
+    })
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-emerald-500 p-4">
-      <Card className="max-w-md w-full shadow-lg border-none bg-white/90 backdrop-blur-md">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{
+      backgroundColor: 'hsl(var(--brand-background))'
+    }}>
+      <Card className="border shadow-xl backdrop-blur-sm rounded-lg" style={{
+        backgroundColor: 'hsl(var(--background))',
+        borderColor: 'hsl(var(--brand-border))'
+      }}>
         <CardContent className="flex flex-col items-center text-center space-y-6 p-6">
           <SafeImage
               src={image || ""}
@@ -46,23 +58,26 @@ export function BookingHome({
               height={150}
               className="rounded-xl object-cover shadow-sm"
           />
-          <h1 className="text-2xl font-semibold text-gray-800">{`Welcome to ${title}`}</h1>
-          <p className="text-gray-600 text-sm">{description}</p>
+          <h1 className="text-2xl font-semibold" style={{ color: 'hsl(var(--foreground))' }}>{`Welcome to ${title}`}</h1>
+          <p className="text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>{description}</p>
 
           <div className="w-full space-y-3">
             <Button
               onClick={handleBooking}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="font-semibold shadow-lg transition-colors duration-200 px-4 py-2 rounded w-full"
+              style={{
+                backgroundColor: 'hsl(var(--brand-button-primary))',
+                color: 'hsl(var(--brand-button-primary-foreground))'
+              }}
               disabled={!termsAccepted}
             >
               Start Booking
             </Button>
 
             {/* Terms checkbox — optional but UX-friendly */}
-            <div className="flex items-start space-x-2 text-sm text-gray-600">
+            <div className="flex items-start space-x-2 text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
               <Checkbox
                 id="terms"
-                className='data-[state=checked]:bg-emerald-500'
                 checked={termsAccepted}
                 onCheckedChange={(checked) => setTermsAccepted(!!checked)}
               />
@@ -70,7 +85,8 @@ export function BookingHome({
                 I agree to the{" "}
                 <a
                   href="/terms"
-                  className="text-emerald-700 hover:underline font-medium"
+                  className="underline transition-colors duration-200"
+                  style={{ color: 'hsl(var(--brand-primary))' }}
                   target="_blank"
                 >
                   Terms & Conditions
@@ -142,10 +158,14 @@ export default function HomePage( { params }: { params: Promise<{venue_id : stri
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-emerald-500">
+      <div className="min-h-screen flex items-center justify-center p-4" style={{
+        backgroundColor: 'hsl(var(--brand-background))'
+      }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-emerald-700">Loading venue...</p>
+          <div className="animate-spin rounded-full border-4 border-t-transparent h-8 w-8 mx-auto mb-4" style={{
+            borderColor: 'hsl(var(--brand-primary)) transparent transparent transparent'
+          }}></div>
+          <p style={{ color: 'hsl(var(--brand-primary))' }}>Loading venue...</p>
         </div>
       </div>
     );
@@ -153,15 +173,24 @@ export default function HomePage( { params }: { params: Promise<{venue_id : stri
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-emerald-500 p-4">
-        <Card className="max-w-md w-full shadow-lg border-none bg-white/90 backdrop-blur-md">
+      <div className="min-h-screen flex items-center justify-center p-4" style={{
+        backgroundColor: 'hsl(var(--brand-background))'
+      }}>
+        <Card className="border shadow-xl backdrop-blur-sm rounded-lg" style={{
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--brand-border))'
+        }}>
           <CardContent className="flex flex-col items-center text-center space-y-6 p-6">
             <div className="text-red-500 text-lg">⚠️</div>
-            <h1 className="text-xl font-semibold text-gray-800">Unable to load venue</h1>
-            <p className="text-gray-600 text-sm">{error}</p>
+            <h1 className="text-xl font-semibold" style={{ color: 'hsl(var(--foreground))' }}>Unable to load venue</h1>
+            <p className="text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>{error}</p>
             <Button 
               onClick={() => window.location.reload()} 
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="font-semibold shadow-lg transition-colors duration-200 px-4 py-2 rounded"
+              style={{
+                backgroundColor: 'hsl(var(--brand-button-primary))',
+                color: 'hsl(var(--brand-button-primary-foreground))'
+              }}
             >
               Try Again
             </Button>
@@ -277,11 +306,19 @@ export function VenueHomePage( { params }: { params: Promise<{venue_id : string}
       </ScrollArea>
 
       {/* Floating "Book Now" Button */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t flex justify-center max-w-xs">
+      <div className="fixed bottom-0 left-0 right-0 p-4 backdrop-blur-md shadow-lg max-w-xs" style={{
+        backgroundColor: 'hsl(var(--background) / 0.8)',
+        borderTopColor: 'hsl(var(--brand-border))',
+        borderTop: '1px solid'
+      }}>
       <Link href={`/venue/${venue_id}/booking/step1`}>
         <Button
           size="lg"
-          className="w-full max-w-sm text-lg font-semibold"
+          className="font-semibold shadow-lg transition-colors duration-200 w-full max-w-sm text-lg"
+          style={{
+            backgroundColor: 'hsl(var(--brand-button-primary))',
+            color: 'hsl(var(--brand-button-primary-foreground))'
+          }}
         >
           Book Now
         </Button>
