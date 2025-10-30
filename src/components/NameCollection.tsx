@@ -74,10 +74,10 @@ export default function NameCollection({ user, onComplete, redirectPath }: NameC
             <UserIcon className="w-6 h-6" style={{ color: 'hsl(var(--brand-primary))' }} />
           </div>
           <CardTitle className="text-xl font-bold" style={{ color: 'hsl(var(--foreground))' }}>
-            Welcome! What's your name?
+            Welcome! What&apos;s your name?
           </CardTitle>
           <p className="text-sm mt-2" style={{ color: 'hsl(var(--muted-foreground))' }}>
-            We'll use this for your bookings and reservations
+            We&apos;ll use this for your bookings and reservations
           </p>
         </CardHeader>
         
