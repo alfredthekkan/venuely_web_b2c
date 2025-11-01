@@ -15,20 +15,20 @@ export default function DemoLandingPage() {
 
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Crown className="w-8 h-8 mr-2" style={{ color: 'hsl(var(--brand-primary))' }} />
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className="text-3xl font-bold text-white">
               Venuely
             </h1>
           </div>
-          <p className="text-lg mb-2 text-foreground">
+          <p className="text-lg mb-2 text-white">
             Luxury Venue Booking Experience
           </p>
-          <p className="text-muted-foreground text-sm px-2">
+          <p className="text-gray-300 text-sm px-2">
             Experience the future of venue reservations with our premium booking widget. 
             Seamless, elegant, and designed for the finest establishments.
           </p>
@@ -59,32 +59,32 @@ export default function DemoLandingPage() {
               </div>
             </div>
             
-            <CardContent className="p-4">
+            <CardContent className="p-4 bg-card">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">
+                  <h3 className="text-lg font-semibold mb-3 text-white">
                     What You&apos;ll Experience:
                   </h3>
                   <div className="space-y-2">
-                    <div className="flex items-center text-foreground">
+                    <div className="flex items-center text-white">
                       <Calendar className="w-4 h-4 mr-3" style={{ 
                         color: 'hsl(var(--brand-primary))' 
                       }} />
                       <span className="text-sm">Interactive service selection</span>
                     </div>
-                    <div className="flex items-center text-foreground">
+                    <div className="flex items-center text-white">
                       <Clock className="w-4 h-4 mr-3" style={{ 
                         color: 'hsl(var(--brand-primary))' 
                       }} />
                       <span className="text-sm">Real-time availability slots</span>
                     </div>
-                    <div className="flex items-center text-foreground">
+                    <div className="flex items-center text-white">
                       <MapPin className="w-4 h-4 mr-3" style={{ 
                         color: 'hsl(var(--brand-primary))' 
                       }} />
                       <span className="text-sm">Seamless contact collection</span>
                     </div>
-                    <div className="flex items-center text-foreground">
+                    <div className="flex items-center text-white">
                       <Star className="w-4 h-4 mr-3" style={{ 
                         color: 'hsl(var(--brand-primary))' 
                       }} />
