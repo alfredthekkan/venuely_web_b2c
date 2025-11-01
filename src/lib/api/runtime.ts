@@ -13,7 +13,7 @@
  */
 
 
-export const BASE_PATH = "https://firebase-entrypoint-kfvk76r6nq-uc.a.run.app".replace(/\/+$/, "");
+export const BASE_PATH = "https://firebase-entrypoint-pfgu2skrmq-uc.a.run.app".replace(/\/+$/, "");
 
 export interface ConfigurationParameters {
     basePath?: string; // override base path

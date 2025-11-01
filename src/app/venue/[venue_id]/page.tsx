@@ -10,6 +10,7 @@ import { SafeImage } from '@/components/ui/safe-image';
 import Link from 'next/link'
 import { DefaultApi, VenueGetRequest } from '@/lib/api/apis/DefaultApi';
 import { VenueGetResponse } from '@/lib/api/models/VenueGetResponse';
+import { createApiClient, getCurrentApiUrl, logApiEnvironment } from '@/lib/api-config';
 import { useVenue } from '@/context/VenueContext';
 import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -129,8 +130,9 @@ export default function HomePage( { params }: { params: Promise<{venue_id : stri
 
       try {
         // CALL THE GENERATED FUNCTION
-        const api = new DefaultApi()
+        const api = createApiClient()
         console.log('Making API call with params:', requestParams);
+        console.log('Using API URL:', getCurrentApiUrl());
         const result = await api.venueGet(requestParams);
         
         console.log('API response:', result);
