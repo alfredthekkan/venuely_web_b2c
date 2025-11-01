@@ -36,7 +36,10 @@ export default function DemoLandingPage() {
 
         {/* Demo Venue Showcase */}
         <div className="mb-8">
-          <Card className="bg-card border-2 shadow-lg overflow-hidden">
+          <Card className="shadow-lg overflow-hidden" style={{
+            backgroundColor: 'hsl(var(--background))',
+            borderColor: 'hsl(var(--brand-border))'
+          }}>
             <div className="p-4" style={{
               background: `linear-gradient(to right, hsl(var(--brand-primary)), hsl(var(--brand-button-primary-hover)))`
             }}>
@@ -59,7 +62,9 @@ export default function DemoLandingPage() {
               </div>
             </div>
             
-            <CardContent className="p-4 bg-card">
+            <CardContent className="p-4" style={{
+              backgroundColor: 'hsl(var(--background))'
+            }}>
               <div className="space-y-4">
                 <div>
                   <h3 className="text-lg font-semibold mb-3" style={{ color: 'hsl(var(--foreground))' }}>
@@ -93,9 +98,12 @@ export default function DemoLandingPage() {
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-lg border bg-secondary">
-                  <h4 className="font-semibold mb-2 text-secondary-foreground">Demo Features:</h4>
-                  <ul className="text-secondary-foreground text-sm space-y-1">
+                <div className="p-4 rounded-lg border" style={{
+                  backgroundColor: 'hsl(var(--muted))',
+                  borderColor: 'hsl(var(--brand-border))'
+                }}>
+                  <h4 className="font-semibold mb-2" style={{ color: 'hsl(var(--foreground))' }}>Demo Features:</h4>
+                  <ul className="text-sm space-y-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
                     <li>• Multi-step booking flow</li>
                     <li>• Environment-aware API calls</li>
                     <li>• Real-time slot availability</li>
@@ -130,7 +138,7 @@ export default function DemoLandingPage() {
 
         {/* Footer */}
         <div className="text-center mt-8">
-          <p className="text-xs text-muted-foreground">Built with Next.js 15, Firebase Auth & Luxury Design</p>
+          <p className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>Built with Next.js 15, Firebase Auth & Luxury Design</p>
         </div>
       </div>
     </div>
