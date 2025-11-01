@@ -15,7 +15,7 @@ export default function DemoLandingPage() {
 
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'hsl(var(--brand-background))' }}>
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="text-center mb-8">
@@ -25,7 +25,7 @@ export default function DemoLandingPage() {
               Venuely
             </h1>
           </div>
-          <p className="text-lg mb-2" style={{ color: 'hsl(var(--brand-secondary-foreground))' }}>
+          <p className="text-lg mb-2 text-foreground">
             Luxury Venue Booking Experience
           </p>
           <p className="text-muted-foreground text-sm px-2">
@@ -36,10 +36,7 @@ export default function DemoLandingPage() {
 
         {/* Demo Venue Showcase */}
         <div className="mb-8">
-          <Card className="border-2 shadow-lg overflow-hidden" style={{
-            backgroundColor: 'hsl(var(--brand-surface))',
-            borderColor: 'hsl(var(--brand-border))'
-          }}>
+          <Card className="bg-card border-2 shadow-lg overflow-hidden">
             <div className="p-4" style={{
               background: `linear-gradient(to right, hsl(var(--brand-primary)), hsl(var(--brand-button-primary-hover)))`
             }}>
@@ -96,12 +93,9 @@ export default function DemoLandingPage() {
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-lg border" style={{
-                  backgroundColor: 'hsl(var(--card))',
-                  borderColor: 'hsl(var(--border))'
-                }}>
-                  <h4 className="font-semibold mb-2 text-foreground">Demo Features:</h4>
-                  <ul className="text-foreground text-sm space-y-1">
+                <div className="p-4 rounded-lg border bg-secondary">
+                  <h4 className="font-semibold mb-2 text-secondary-foreground">Demo Features:</h4>
+                  <ul className="text-secondary-foreground text-sm space-y-1">
                     <li>• Multi-step booking flow</li>
                     <li>• Environment-aware API calls</li>
                     <li>• Real-time slot availability</li>
@@ -135,13 +129,8 @@ export default function DemoLandingPage() {
 
 
         {/* Footer */}
-        <div className="text-center mt-8 text-muted-foreground">
-          <p className="text-xs mb-2">Built with Next.js 15, Firebase Auth & Luxury Design</p>
-          <p className="text-xs">Venue ID: <code className="px-1 py-0.5 rounded text-xs" style={{
-            backgroundColor: 'hsl(var(--card))',
-            color: 'hsl(var(--foreground))',
-            border: '1px solid hsl(var(--border))'
-          }}>PJjw3aE04RchkGlzUTjI</code></p>
+        <div className="text-center mt-8">
+          <p className="text-xs text-muted-foreground">Built with Next.js 15, Firebase Auth & Luxury Design</p>
         </div>
       </div>
     </div>
