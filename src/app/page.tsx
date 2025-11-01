@@ -136,10 +136,6 @@ export default function DemoLandingPage() {
 
 
 
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>Built with Next.js 15, Firebase Auth & Luxury Design</p>
-        </div>
       </div>
     </div>
   );
