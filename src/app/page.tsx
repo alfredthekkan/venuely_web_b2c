@@ -17,20 +17,22 @@ export default function DemoLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-brand-charcoal via-brand-900 to-brand-700">
+    <div className="min-h-screen" style={{
+      background: `linear-gradient(to bottom right, hsl(var(--brand-gradient-from)), hsl(var(--brand-gradient-via)), hsl(var(--brand-gradient-to)))`
+    }}>
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
-            <Crown className="w-12 h-12 text-brand-500 mr-3" />
-            <h1 className="text-4xl md:text-6xl font-bold text-white">
+            <Crown className="w-12 h-12 mr-3" style={{ color: 'hsl(var(--brand-primary))' }} />
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground">
               Venuely
             </h1>
           </div>
-          <p className="text-xl md:text-2xl text-brand-300 mb-2">
+          <p className="text-xl md:text-2xl mb-2" style={{ color: 'hsl(var(--brand-secondary-foreground))' }}>
             Luxury Venue Booking Experience
           </p>
-          <p className="text-brand-400 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Experience the future of venue reservations with our premium booking widget. 
             Seamless, elegant, and designed for the finest establishments.
           </p>
@@ -38,51 +40,77 @@ export default function DemoLandingPage() {
 
         {/* Demo Venue Showcase */}
         <div className="max-w-4xl mx-auto mb-16">
-          <Card className="bg-brand-black border-brand-500 border-2 shadow-2xl overflow-hidden">
-            <div className="bg-linear-to-r from-brand-500 to-brand-600 p-6">
+          <Card className="border-2 shadow-2xl overflow-hidden" style={{
+            backgroundColor: 'hsl(var(--brand-surface))',
+            borderColor: 'hsl(var(--brand-border))'
+          }}>
+            <div className="p-6" style={{
+              background: `linear-gradient(to right, hsl(var(--brand-primary)), hsl(var(--brand-button-primary-hover)))`
+            }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-brand-black mb-2">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-2" style={{ 
+                    color: 'hsl(var(--brand-primary-foreground))' 
+                  }}>
                     Premium Demo Venue
                   </h2>
-                  <p className="text-brand-900 text-lg">
+                  <p className="text-lg" style={{ 
+                    color: 'hsl(var(--brand-primary-foreground) / 0.8)' 
+                  }}>
                     Experience our luxury booking system in action
                   </p>
                 </div>
-                <Sparkles className="w-12 h-12 text-brand-black" />
+                <Sparkles className="w-12 h-12" style={{ 
+                  color: 'hsl(var(--brand-primary-foreground))' 
+                }} />
               </div>
             </div>
             
             <CardContent className="p-8">
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-xl font-semibold text-brand-500 mb-4">
-                    What You'll Experience:
+                  <h3 className="text-xl font-semibold mb-4" style={{ 
+                    color: 'hsl(var(--brand-secondary-foreground))' 
+                  }}>
+                    What You&apos;ll Experience:
                   </h3>
                   <div className="space-y-3">
-                    <div className="flex items-center text-brand-300">
-                      <Calendar className="w-5 h-5 text-brand-500 mr-3" />
+                    <div className="flex items-center text-muted-foreground">
+                      <Calendar className="w-5 h-5 mr-3" style={{ 
+                        color: 'hsl(var(--brand-primary))' 
+                      }} />
                       <span>Interactive service selection</span>
                     </div>
-                    <div className="flex items-center text-brand-300">
-                      <Clock className="w-5 h-5 text-brand-500 mr-3" />
+                    <div className="flex items-center text-muted-foreground">
+                      <Clock className="w-5 h-5 mr-3" style={{ 
+                        color: 'hsl(var(--brand-primary))' 
+                      }} />
                       <span>Real-time availability slots</span>
                     </div>
-                    <div className="flex items-center text-brand-300">
-                      <MapPin className="w-5 h-5 text-brand-500 mr-3" />
+                    <div className="flex items-center text-muted-foreground">
+                      <MapPin className="w-5 h-5 mr-3" style={{ 
+                        color: 'hsl(var(--brand-primary))' 
+                      }} />
                       <span>Seamless contact collection</span>
                     </div>
-                    <div className="flex items-center text-brand-300">
-                      <Star className="w-5 h-5 text-brand-500 mr-3" />
+                    <div className="flex items-center text-muted-foreground">
+                      <Star className="w-5 h-5 mr-3" style={{ 
+                        color: 'hsl(var(--brand-primary))' 
+                      }} />
                       <span>Firebase phone authentication</span>
                     </div>
                   </div>
                 </div>
                 
                 <div className="flex flex-col justify-center">
-                  <div className="bg-linear-to-br from-brand-800 to-brand-900 p-6 rounded-lg border border-brand-600 mb-6">
-                    <h4 className="text-brand-500 font-semibold mb-2">Demo Features:</h4>
-                    <ul className="text-brand-300 text-sm space-y-1">
+                  <div className="p-6 rounded-lg border mb-6" style={{
+                    background: `linear-gradient(to bottom right, hsl(var(--brand-secondary)), hsl(var(--brand-surface)))`,
+                    borderColor: 'hsl(var(--brand-border) / 0.5)'
+                  }}>
+                    <h4 className="font-semibold mb-2" style={{ 
+                      color: 'hsl(var(--brand-secondary-foreground))' 
+                    }}>Demo Features:</h4>
+                    <ul className="text-muted-foreground text-sm space-y-1">
                       <li>• Multi-step booking flow</li>
                       <li>• Environment-aware API calls</li>
                       <li>• Real-time slot availability</li>
@@ -93,7 +121,17 @@ export default function DemoLandingPage() {
                   
                   <Button 
                     onClick={handleDemoVenue}
-                    className="bg-brand-500 hover:bg-brand-600 text-brand-black font-bold py-4 px-8 text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    className="font-bold py-4 px-8 text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    style={{
+                      backgroundColor: 'hsl(var(--brand-button-primary))',
+                      color: 'hsl(var(--brand-button-primary-foreground))'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'hsl(var(--brand-button-primary-hover))';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'hsl(var(--brand-button-primary))';
+                    }}
                   >
                     <Crown className="w-5 h-5 mr-2" />
                     Try Demo Venue
@@ -106,48 +144,90 @@ export default function DemoLandingPage() {
 
         {/* Additional Options */}
         <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <Card className="bg-brand-black/80 border-brand-700 hover:border-brand-500 transition-all duration-300">
+          <Card className="transition-all duration-300 hover:shadow-lg" style={{
+            backgroundColor: 'hsl(var(--brand-surface) / 0.8)',
+            borderColor: 'hsl(var(--brand-border) / 0.5)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'hsl(var(--brand-border))';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'hsl(var(--brand-border) / 0.5)';
+          }}>
             <CardContent className="p-6 text-center">
-              <h3 className="text-brand-500 font-semibold mb-3">OTP Authentication</h3>
-              <p className="text-brand-400 text-sm mb-4">
+              <h3 className="font-semibold mb-3" style={{ 
+                color: 'hsl(var(--brand-secondary-foreground))' 
+              }}>OTP Authentication</h3>
+              <p className="text-muted-foreground text-sm mb-4">
                 Test Firebase phone authentication system
               </p>
               <Button 
                 onClick={() => handleOtherActions("/login")}
                 variant="outline"
-                className="border-brand-500 text-brand-500 hover:bg-brand-500 hover:text-brand-black"
+                style={{
+                  borderColor: 'hsl(var(--brand-border))',
+                  color: 'hsl(var(--brand-secondary-foreground))'
+                }}
               >
                 Try Login
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-brand-black/80 border-brand-700 hover:border-brand-500 transition-all duration-300">
+          <Card className="transition-all duration-300 hover:shadow-lg" style={{
+            backgroundColor: 'hsl(var(--brand-surface) / 0.8)',
+            borderColor: 'hsl(var(--brand-border) / 0.5)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'hsl(var(--brand-border))';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'hsl(var(--brand-border) / 0.5)';
+          }}>
             <CardContent className="p-6 text-center">
-              <h3 className="text-brand-500 font-semibold mb-3">Theme Demo</h3>
-              <p className="text-brand-400 text-sm mb-4">
+              <h3 className="font-semibold mb-3" style={{ 
+                color: 'hsl(var(--brand-secondary-foreground))' 
+              }}>Theme Demo</h3>
+              <p className="text-muted-foreground text-sm mb-4">
                 Explore the luxury black & gold theme system
               </p>
               <Button 
                 onClick={() => handleOtherActions("/theme-demo")}
                 variant="outline"
-                className="border-brand-500 text-brand-500 hover:bg-brand-500 hover:text-brand-black"
+                style={{
+                  borderColor: 'hsl(var(--brand-border))',
+                  color: 'hsl(var(--brand-secondary-foreground))'
+                }}
               >
                 View Themes
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-brand-black/80 border-brand-700 hover:border-brand-500 transition-all duration-300">
+          <Card className="transition-all duration-300 hover:shadow-lg" style={{
+            backgroundColor: 'hsl(var(--brand-surface) / 0.8)',
+            borderColor: 'hsl(var(--brand-border) / 0.5)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'hsl(var(--brand-border))';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'hsl(var(--brand-border) / 0.5)';
+          }}>
             <CardContent className="p-6 text-center">
-              <h3 className="text-brand-500 font-semibold mb-3">Documentation</h3>
-              <p className="text-brand-400 text-sm mb-4">
+              <h3 className="font-semibold mb-3" style={{ 
+                color: 'hsl(var(--brand-secondary-foreground))' 
+              }}>Documentation</h3>
+              <p className="text-muted-foreground text-sm mb-4">
                 Learn about the booking widget architecture
               </p>
               <Button 
                 onClick={() => handleOtherActions("/tuts")}
                 variant="outline"
-                className="border-brand-500 text-brand-500 hover:bg-brand-500 hover:text-brand-black"
+                style={{
+                  borderColor: 'hsl(var(--brand-border))',
+                  color: 'hsl(var(--brand-secondary-foreground))'
+                }}
               >
                 Learn More
               </Button>
@@ -156,9 +236,12 @@ export default function DemoLandingPage() {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-16 text-brand-400">
+        <div className="text-center mt-16 text-muted-foreground">
           <p className="mb-2">Built with Next.js 15, Firebase Auth & Luxury Design</p>
-          <p className="text-sm">Venue ID: <code className="bg-brand-800 px-2 py-1 rounded text-brand-500">PJjw3aE04RchkGlzUTjI</code></p>
+          <p className="text-sm">Venue ID: <code className="px-2 py-1 rounded" style={{
+            backgroundColor: 'hsl(var(--brand-secondary))',
+            color: 'hsl(var(--brand-secondary-foreground))'
+          }}>PJjw3aE04RchkGlzUTjI</code></p>
         </div>
       </div>
     </div>
