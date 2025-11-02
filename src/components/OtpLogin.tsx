@@ -190,14 +190,15 @@ export default function OtpLogin() {
 
   // Show name collection screen if user authenticated but no displayName
   if (showNameCollection && authenticatedUser) {
-    return <NameCollection user={authenticatedUser} onComplete={() => {
-      if (searchParams.get('redirect')) {
-        const route = searchParams.get('redirect') 
-        router.push(route!)
-      } else {
-        router.push("/home")
-      }
-    }} />
+    const redirectPath = searchParams.get('redirect') || "/home";
+    return <NameCollection 
+      user={authenticatedUser} 
+      redirectPath={redirectPath}
+      onComplete={() => {
+        // The NameCollection component will handle the redirect itself
+        console.log('Name collection completed, redirecting to:', redirectPath);
+      }} 
+    />
   }
 
   return (
