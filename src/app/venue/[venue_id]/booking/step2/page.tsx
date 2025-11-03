@@ -7,7 +7,7 @@ import { BookingContext } from '@/context/BookingContext';
 import { NavigationContext } from '@/context/NavigationContext';
 import { BookingDateSelector } from '@/components/DateScroller';
 import { useVenue } from '@/context/VenueContext';
-import { DefaultApi, GetTimeSlotsGetRequest, BookableResourceAvailability, AvailabilitySlot } from '@/lib/api';
+import { WidgetApi, SlotsGetRequest, BookableResourceAvailability, AvailabilitySlot } from '@/lib/api';
 import { getNextTwoWeeksDates } from '@/lib/dateutils';
 // Removed old style imports - now using CSS variables directly
 
@@ -78,7 +78,7 @@ export default function TimeSlotSelector() {
     }
 
     //construct the request param object
-    const requestParams: GetTimeSlotsGetRequest = {
+    const requestParams: SlotsGetRequest = {
       venueId: venue_id,
       serviceIds: services.map((service) => service.id ?? ''),
       date: date
@@ -86,8 +86,8 @@ export default function TimeSlotSelector() {
 
     try {
       // CALL THE GENERATED FUNCTION
-      const api = new DefaultApi()
-      const result = await api.getTimeSlotsGet(requestParams);
+      const api = new WidgetApi()
+      const result = await api.slotsGet(requestParams);
       setProviders(result)
     }catch (err) {
       // Handle any network or API-specific errors
