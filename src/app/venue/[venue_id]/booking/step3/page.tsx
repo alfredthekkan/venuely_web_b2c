@@ -85,6 +85,10 @@ export default function Summary() {
   const navContext = useContext(NavigationContext)
   const bookingContext = useContext(BookingContext)
   const { venueResponse } = useVenue()
+  const { user } = useAuth()
+  const router = useRouter()
+  const [shouldAutoSubmit, setShouldAutoSubmit] = useState(false)
+
   useEffect(() => {
     navContext.setTitle("Summary")
   }, [navContext.title])
@@ -96,10 +100,55 @@ React.useEffect(() => {
     if (pendingBooking) {
         // 1. Update your context state with the restored data
         bookingContext.setBooking(pendingBooking)
+        // 2. Set flag to auto-submit after user authentication
+        setShouldAutoSubmit(true)
     }else {
       console.log("Nothing pending")
     }
 }, []); // Run only once on mount}
+
+  // Auto-submit booking when user is authenticated and we have pending booking
+  useEffect(() => {
+    if (shouldAutoSubmit && user && bookingContext.booking) {
+      console.log("Auto-submitting booking after authentication")
+      setShouldAutoSubmit(false) // Prevent multiple submissions
+      
+      // Auto-submit the booking
+      const autoSubmitBooking = async () => {
+        const venue_id = bookingContext.booking?.venue_id
+        if (!bookingContext.booking?.start || !bookingContext.booking.end || !bookingContext.booking.providerId) {
+          console.log("Some required values are null for auto-submit")
+          return
+        }
+        
+        const requestParams: CreateReservationRequest = {
+          venueId: venue_id ?? '',
+          staffId: bookingContext.booking.providerId,
+          bookingResourceName: 'Default Resource',
+          serviceIds: bookingContext.booking?.services.map((s) => s.id ?? '') ?? [],
+          startDate: bookingContext.booking?.start,
+          endDate: bookingContext.booking?.end,
+          guestName: user?.displayName ?? 'Guest',
+          guestNotes: 'No special notes'
+        };
+
+        try {
+          const token = await user?.getIdToken(true)
+          const config = new Configuration({accessToken: token ?? ''})
+          const bookingApi = new DefaultApi(config)
+          const reservationRequest: ReservationPostRequest = { createReservationRequest: requestParams }
+          const result = await bookingApi.reservationPost(reservationRequest);
+          console.log("Auto-submitted reservation successfully")
+          router.push(`/venue/${venue_id}/booking/step4`);
+        } catch (err) {
+          console.log("Auto-submit failed:", err)
+          // If auto-submit fails, user can still manually submit
+        }
+      }
+      
+      autoSubmitBooking()
+    }
+  }, [shouldAutoSubmit, user, bookingContext.booking, router])
 
 console.log('start value:', bookingContext.booking?.start);    
   const summary = {
