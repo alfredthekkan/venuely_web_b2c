@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useTransition } from 'react';
+import React, { useState, useTransition, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +18,11 @@ export default function NameCollection({ user, onComplete, redirectPath }: NameC
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  // Debug: Log redirect path on component mount
+  useEffect(() => {
+    console.log('👤 NameCollection received redirectPath:', redirectPath);
+  }, [redirectPath]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +51,7 @@ export default function NameCollection({ user, onComplete, redirectPath }: NameC
         onComplete();
         
         // Navigate to redirect path or home
+        console.log('🚀 NameCollection redirecting to:', redirectPath || '/home');
         if (redirectPath) {
           router.push(redirectPath);
         } else {

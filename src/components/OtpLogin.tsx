@@ -74,6 +74,12 @@ export default function OtpLogin() {
 
     const searchParams = useSearchParams()
 
+    // Debug: Log redirect parameter on component mount
+    useEffect(() => {
+        const redirectParam = searchParams.get('redirect');
+        console.log('🔗 OtpLogin redirect parameter:', redirectParam);
+    }, [searchParams]);
+
     const verifyOtp = async () => {
         startTransition(async () => {
             setError("")
@@ -191,12 +197,13 @@ export default function OtpLogin() {
   // Show name collection screen if user authenticated but no displayName
   if (showNameCollection && authenticatedUser) {
     const redirectPath = searchParams.get('redirect') || "/home";
+    console.log('📝 Showing NameCollection with redirectPath:', redirectPath);
     return <NameCollection 
       user={authenticatedUser} 
       redirectPath={redirectPath}
       onComplete={() => {
         // The NameCollection component will handle the redirect itself
-        console.log('Name collection completed, redirecting to:', redirectPath);
+        console.log('✅ Name collection completed, redirecting to:', redirectPath);
       }} 
     />
   }
