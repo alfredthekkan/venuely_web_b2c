@@ -19,7 +19,7 @@ jobs:
 
       - name: Debug token access
         run: |
-          echo "Testing repository access..."
+          echo "Testing repository access with updated PAT..."
           curl -H "Authorization: token ${{ secrets.GH_PAT }}" https://api.github.com/repos/alfredthekkan/firefly-api-specs || echo "API access failed"
           
       - name: Checkout submodules
