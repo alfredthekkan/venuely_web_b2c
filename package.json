@@ -12,7 +12,7 @@
     "start:staging": "NODE_ENV=staging next start",
     "start:production": "NODE_ENV=production next start",
     "lint": "eslint",
-    "genapi": "openapi-generator-cli generate -i api.yaml -g typescript-fetch -o src/lib/api --additional-properties=supportsES6=true,typescriptThreePlus=true"
+    "genapi": "openapi-generator-cli generate -i specs/firefly-api-specs/openapi.yaml -g typescript-fetch -o src/lib/api --additional-properties=supportsES6=true,typescriptThreePlus=true --skip-validate-spec"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

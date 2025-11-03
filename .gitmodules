@@ -1,0 +1,3 @@
+[submodule "specs/firefly-api-specs"]
+	path = specs/firefly-api-specs
+	url = https://github.com/alfredthekkan/firefly-api-specs.git
