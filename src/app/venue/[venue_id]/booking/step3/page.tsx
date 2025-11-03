@@ -10,8 +10,8 @@ import { useEffect, useContext, useState } from "react";
 import { NavigationContext } from '@/context/NavigationContext';
 import { useAuth } from "@/context/AuthContext";
 import { BookingContext, BookingModel } from "@/context/BookingContext";
-import { WidgetApi, Configuration, CreateReservationRequest, Service, ReservationPostRequest } from "@/lib/api";
-import { createApiConfig } from "@/lib/api-config";
+import { CreateReservationRequest, Service, ReservationPostRequest } from "@/lib/api";
+import { createApiClient } from "@/lib/api-config";
 import { useVenue } from "@/context/VenueContext";
 import { MapPin, Calendar, Clock, Scissors, DollarSign, FileText, User, MessageSquare } from "lucide-react";
 // Removed old style imports - now using CSS variables directly
@@ -135,15 +135,7 @@ React.useEffect(() => {
 
         try {
           const token = await user?.getIdToken(true)
-          const baseConfig = createApiConfig(token)
-          const config = new Configuration({
-            ...baseConfig,
-            headers: {
-              ...baseConfig.headers,
-              'X-App-Source': 'nextjs-widget'
-            }
-          })
-          const bookingApi = new WidgetApi(config)
+          const bookingApi = createApiClient(token)
           const reservationRequest: ReservationPostRequest = { createReservationRequest: requestParams }
           const result = await bookingApi.reservationPost(reservationRequest);
           console.log("Auto-submitted reservation successfully")
@@ -208,15 +200,7 @@ function BookingSummary({
       try {
         // CALL THE GENERATED FUNCTION
         const token = await user?.getIdToken(true)
-        const baseConfig = createApiConfig(token)
-        const config = new Configuration({
-          ...baseConfig,
-          headers: {
-            ...baseConfig.headers,
-            'X-App-Source': 'nextjs-widget'
-          }
-        })
-        const bookingApi = new WidgetApi(config)
+        const bookingApi = createApiClient(token)
         const reservationRequest: ReservationPostRequest = { createReservationRequest: requestParams }
         const result = await bookingApi.reservationPost(reservationRequest);
         console.log("successfully created reservation")
@@ -240,7 +224,7 @@ function BookingSummary({
     }
 
   return (
-    <div className="min-h-[100vh] w-full flex flex-col justify-start p-4 pb-20 pt-8 relative" style={{
+    <div className="min-h-screen w-full flex flex-col justify-start p-4 pb-20 pt-8 relative" style={{
       backgroundColor: 'hsl(var(--brand-background))'
     }}>
       <div className="flex justify-center px-4 mt-10">
