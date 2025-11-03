@@ -7,7 +7,8 @@ import { BookingContext } from '@/context/BookingContext';
 import { NavigationContext } from '@/context/NavigationContext';
 import { BookingDateSelector } from '@/components/DateScroller';
 import { useVenue } from '@/context/VenueContext';
-import { WidgetApi, SlotsGetRequest, BookableResourceAvailability, AvailabilitySlot } from '@/lib/api';
+import { SlotsGetRequest, BookableResourceAvailability, AvailabilitySlot } from '@/lib/api';
+import { createApiClient } from '@/lib/api-config';
 import { getNextTwoWeeksDates } from '@/lib/dateutils';
 // Removed old style imports - now using CSS variables directly
 
@@ -86,7 +87,7 @@ export default function TimeSlotSelector() {
 
     try {
       // CALL THE GENERATED FUNCTION
-      const api = new WidgetApi()
+      const api = createApiClient()
       const result = await api.slotsGet(requestParams);
       setProviders(result)
     }catch (err) {

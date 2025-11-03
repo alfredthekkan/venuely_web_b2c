@@ -11,6 +11,7 @@ import { NavigationContext } from '@/context/NavigationContext';
 import { useAuth } from "@/context/AuthContext";
 import { BookingContext, BookingModel } from "@/context/BookingContext";
 import { WidgetApi, Configuration, CreateReservationRequest, Service, ReservationPostRequest } from "@/lib/api";
+import { createApiConfig } from "@/lib/api-config";
 import { useVenue } from "@/context/VenueContext";
 import { MapPin, Calendar, Clock, Scissors, DollarSign, FileText, User, MessageSquare } from "lucide-react";
 // Removed old style imports - now using CSS variables directly
@@ -134,9 +135,11 @@ React.useEffect(() => {
 
         try {
           const token = await user?.getIdToken(true)
+          const baseConfig = createApiConfig(token)
           const config = new Configuration({
-            accessToken: token ?? '',
+            ...baseConfig,
             headers: {
+              ...baseConfig.headers,
               'X-App-Source': 'nextjs-widget'
             }
           })
@@ -205,9 +208,11 @@ function BookingSummary({
       try {
         // CALL THE GENERATED FUNCTION
         const token = await user?.getIdToken(true)
+        const baseConfig = createApiConfig(token)
         const config = new Configuration({
-          accessToken: token ?? '',
+          ...baseConfig,
           headers: {
+            ...baseConfig.headers,
             'X-App-Source': 'nextjs-widget'
           }
         })
