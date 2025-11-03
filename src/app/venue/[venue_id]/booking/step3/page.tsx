@@ -10,7 +10,7 @@ import { useEffect, useContext, useState } from "react";
 import { NavigationContext } from '@/context/NavigationContext';
 import { useAuth } from "@/context/AuthContext";
 import { BookingContext, BookingModel } from "@/context/BookingContext";
-import { DefaultApi, Configuration, CreateReservationRequest, Service, ReservationPostRequest } from "@/lib/api";
+import { WidgetApi, Configuration, CreateReservationRequest, Service, ReservationPostRequest } from "@/lib/api";
 import { useVenue } from "@/context/VenueContext";
 import { MapPin, Calendar, Clock, Scissors, DollarSign, FileText, User, MessageSquare } from "lucide-react";
 // Removed old style imports - now using CSS variables directly
@@ -134,8 +134,13 @@ React.useEffect(() => {
 
         try {
           const token = await user?.getIdToken(true)
-          const config = new Configuration({accessToken: token ?? ''})
-          const bookingApi = new DefaultApi(config)
+          const config = new Configuration({
+            accessToken: token ?? '',
+            headers: {
+              'X-App-Source': 'nextjs-widget'
+            }
+          })
+          const bookingApi = new WidgetApi(config)
           const reservationRequest: ReservationPostRequest = { createReservationRequest: requestParams }
           const result = await bookingApi.reservationPost(reservationRequest);
           console.log("Auto-submitted reservation successfully")
@@ -200,8 +205,13 @@ function BookingSummary({
       try {
         // CALL THE GENERATED FUNCTION
         const token = await user?.getIdToken(true)
-        const config = new Configuration({accessToken: token ?? ''})
-        const bookingApi = new DefaultApi(config)
+        const config = new Configuration({
+          accessToken: token ?? '',
+          headers: {
+            'X-App-Source': 'nextjs-widget'
+          }
+        })
+        const bookingApi = new WidgetApi(config)
         const reservationRequest: ReservationPostRequest = { createReservationRequest: requestParams }
         const result = await bookingApi.reservationPost(reservationRequest);
         console.log("successfully created reservation")

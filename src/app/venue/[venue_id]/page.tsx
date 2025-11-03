@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import Image from "next/image"
 import { SafeImage } from '@/components/ui/safe-image';
 import Link from 'next/link'
-import { DefaultApi, VenueGetRequest } from '@/lib/api/apis/DefaultApi';
+import { WidgetApi, VenueGetRequest } from '@/lib/api/apis/WidgetApi';
 import { VenueGetResponse } from '@/lib/api/models/VenueGetResponse';
 import { createApiClient, getCurrentApiUrl, logApiEnvironment } from '@/lib/api-config';
 import { useVenue } from '@/context/VenueContext';
@@ -234,7 +234,7 @@ export function VenueHomePage( { params }: { params: Promise<{venue_id : string}
 
       try {
         // CALL THE GENERATED FUNCTION
-        const api = new DefaultApi()
+        const api = new WidgetApi()
         console.log('VenueHomePage - Making API call with params:', requestParams);
         const result = await api.venueGet(requestParams);
         

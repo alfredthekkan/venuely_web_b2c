@@ -1,5 +1,5 @@
 // Environment-aware API configuration
-import { DefaultApi, Configuration } from '@/lib/api';
+import { WidgetApi, Configuration } from '@/lib/api';
 
 // Define your environment URLs
 const API_URLS = {
@@ -24,7 +24,7 @@ export const createApiConfig = (accessToken?: string) => {
 
 // Create API instance with environment-specific config
 export const createApiClient = (accessToken?: string) => {
-  return new DefaultApi(createApiConfig(accessToken));
+  return new WidgetApi(createApiConfig(accessToken));
 };
 
 // Helper to get current API base URL
