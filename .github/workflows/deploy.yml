@@ -17,9 +17,15 @@ jobs:
           submodules: false
           token: ${{ secrets.GH_PAT }}
 
+      - name: Debug token access
+        run: |
+          echo "Testing repository access..."
+          curl -H "Authorization: token ${{ secrets.GH_PAT }}" https://api.github.com/repos/alfredthekkan/firefly-api-specs || echo "API access failed"
+          
       - name: Checkout submodules
         run: |
           git config --global url."https://${{ secrets.GH_PAT }}@github.com/".insteadOf "https://github.com/"
+          git submodule sync
           git submodule update --init --recursive
 
       - name: Setup Node.js
