@@ -23,6 +23,7 @@ type SummaryProps = {
   services: Service[];
   totalCost: number;
   note: string;
+  venue_id: string;
 };
 
 function saveBookingModel(bookingData: BookingModel) {
@@ -82,7 +83,8 @@ function retrieveBookingModel(): BookingModel | null {
     }
 }
 
-export default function Summary() {
+export default function Summary( { params }: { params: Promise<{venue_id : string}>}) {
+  const { venue_id } = React.use(params);
   const navContext = useContext(NavigationContext)
   const bookingContext = useContext(BookingContext)
   const { venueResponse } = useVenue()
@@ -161,9 +163,10 @@ console.log('start value:', bookingContext.booking?.start);
       }, 0) ?? 0,
       note: 'Be on time'
   }
-  return BookingSummary(
-      summary
-  )
+  return BookingSummary({
+      ...summary,
+      venue_id
+  })
 }
 
 function BookingSummary({
@@ -173,12 +176,12 @@ function BookingSummary({
   services,
   totalCost,
   note,
+  venue_id,
 }: SummaryProps) {
 
     const router = useRouter();
     const { user } = useAuth()
     const bookingContext = useContext(BookingContext);
-    const venue_id = bookingContext.booking?.venue_id
     const [specialNotes, setSpecialNotes] = useState('')
 
     const submitBooking = async () => {

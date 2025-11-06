@@ -10,6 +10,7 @@ import { useVenue } from '@/context/VenueContext';
 import { SlotsGetRequest, BookableResourceAvailability, AvailabilitySlot } from '@/lib/api';
 import { createApiClient } from '@/lib/api-config';
 import { getNextTwoWeeksDates } from '@/lib/dateutils';
+import React from 'react';
 // Removed old style imports - now using CSS variables directly
 
 // Helper function to format time string to 12-hour format
@@ -31,7 +32,8 @@ const createDateTime = (date: Date, timeString: string): Date => {
   return new Date(year, month, day, hours, minutes, 0, 0);
 };
 
-export default function TimeSlotSelector() {
+export default function TimeSlotSelector( { params }: { params: Promise<{venue_id : string}>}) {
+  const { venue_id } = React.use(params);
 
   // Set navigation title
   const navContext = useContext(NavigationContext)
@@ -127,7 +129,7 @@ export default function TimeSlotSelector() {
       }else {
         console.log("booking context is empty")
       }
-      router.push(`/venue/${bookingContext.booking?.venue_id}/booking/step3`)
+      router.push(`/venue/${venue_id}/booking/step3`)
     }
   }
 
