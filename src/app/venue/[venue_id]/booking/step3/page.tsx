@@ -24,6 +24,7 @@ type SummaryProps = {
   totalCost: number;
   note: string;
   route: string;
+  isAutoSubmitting: boolean;
 };
 
 function saveBookingModel(bookingData: BookingModel) {
@@ -91,6 +92,7 @@ export default function Summary( { params }: { params: Promise<{venue_id : strin
   const { user } = useAuth()
   const router = useRouter()
   const [shouldAutoSubmit, setShouldAutoSubmit] = useState(false)
+  const [isAutoSubmitting, setIsAutoSubmitting] = useState(false)
 
   useEffect(() => {
     navContext.setTitle("Summary")
@@ -124,6 +126,8 @@ export default function Summary( { params }: { params: Promise<{venue_id : strin
           return
         }
         
+        setIsAutoSubmitting(true)
+        
         const requestParams: CreateReservationRequest = {
           venueId: venueId ?? '',
           staffId: bookingContext.booking.providerId,
@@ -132,6 +136,7 @@ export default function Summary( { params }: { params: Promise<{venue_id : strin
           startDate: bookingContext.booking?.start,
           endDate: bookingContext.booking?.end,
           guestName: user?.displayName ?? 'Guest',
+          guestPhoneNumber: user?.phoneNumber ?? null,
           guestNotes: 'No special notes'
         };
 
@@ -145,6 +150,7 @@ export default function Summary( { params }: { params: Promise<{venue_id : strin
         } catch (err) {
           console.log("Auto-submit failed:", err)
           // If auto-submit fails, user can still manually submit
+          setIsAutoSubmitting(false)
         }
       }
       
@@ -165,7 +171,8 @@ export default function Summary( { params }: { params: Promise<{venue_id : strin
   }
   return BookingSummary({
       ...summary,
-      route: venue_id
+      route: venue_id,
+      isAutoSubmitting
   })
 }
 
@@ -176,19 +183,27 @@ function BookingSummary({
   services,
   totalCost,
   note,
-  route
+  route,
+  isAutoSubmitting
 }: SummaryProps) {
 
     const router = useRouter();
     const { user } = useAuth()
     const bookingContext = useContext(BookingContext);
     const [specialNotes, setSpecialNotes] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     const submitBooking = async () => {
       if (!bookingContext.booking?.start || !bookingContext.booking.end || !bookingContext.booking.providerId) {
         console.log("Some required values are null")
+        setError("Missing required booking information. Please try again.")
         return
       }
+
+      setIsLoading(true)
+      setError(null)
+
       const requestParams: CreateReservationRequest = {
         venueId: bookingContext.booking.venue_id ?? '',
         staffId: bookingContext.booking.providerId,
@@ -197,6 +212,7 @@ function BookingSummary({
         startDate: bookingContext.booking?.start,
         endDate: bookingContext.booking?.end,
         guestName: user?.displayName ?? 'Guest',
+        guestPhoneNumber: user?.phoneNumber ?? null,
         guestNotes: specialNotes || 'No special notes'
       };
 
@@ -209,27 +225,52 @@ function BookingSummary({
         console.log("successfully created reservation")
         router.push(`/venue/${route}/booking/step4`);
       } catch (err) {
-        console.log(err)
+        console.error("Failed to create reservation:", err)
+        setError("Failed to create reservation. Please try again.")
+      } finally {
+        setIsLoading(false)
       }
     }
 
     const handleClick =  async () => {
       console.log("clicked confirm")
-        if (user) {
-          await submitBooking()
-        }else {
-          console.log("No user found! Hence routing to login with redirect")
-          const booking = bookingContext.booking
-          if (bookingContext.booking) 
-            saveBookingModel(bookingContext.booking)
-          router.push(`/login?redirect=/venue/${route}/booking/step3`)
-        }
+      if (isLoading) return // Prevent multiple clicks during loading
+      
+      if (user) {
+        await submitBooking()
+      }else {
+        console.log("No user found! Hence routing to login with redirect")
+        const booking = bookingContext.booking
+        if (bookingContext.booking) 
+          saveBookingModel(bookingContext.booking)
+        router.push(`/login?redirect=/venue/${route}/booking/step3`)
+      }
     }
 
   return (
     <div className="min-h-screen w-full flex flex-col justify-start p-4 pb-20 pt-8 relative" style={{
       backgroundColor: 'hsl(var(--brand-background))'
     }}>
+      {/* Auto-submit loading overlay */}
+      {isAutoSubmitting && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 mx-4 max-w-sm w-full text-center" style={{
+            backgroundColor: 'hsl(var(--background))',
+            borderColor: 'hsl(var(--brand-border))',
+            border: '1px solid'
+          }}>
+            <div className="animate-spin rounded-full border-4 border-t-transparent h-8 w-8 mx-auto mb-4" style={{
+              borderColor: 'hsl(var(--brand-primary)) transparent transparent transparent'
+            }} />
+            <h3 className="text-lg font-semibold mb-2" style={{ color: 'hsl(var(--foreground))' }}>
+              Creating reservation...
+            </h3>
+            <p className="text-sm" style={{ color: 'hsl(var(--muted-foreground))' }}>
+              Please wait while we process your booking
+            </p>
+          </div>
+        </div>
+      )}
       <div className="flex justify-center px-4 mt-10">
         <Card className="border shadow-xl backdrop-blur-sm rounded-lg p-6 w-full min-w-96 max-w-md" style={{
           backgroundColor: 'hsl(var(--brand-background))',
@@ -333,6 +374,19 @@ function BookingSummary({
         </Card>
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div className="flex justify-center px-4 mt-4">
+          <div className="w-full max-w-md p-4 rounded-lg border" style={{
+            backgroundColor: 'hsl(var(--destructive))',
+            borderColor: 'hsl(var(--destructive))',
+            color: 'hsl(var(--destructive-foreground))'
+          }}>
+            <p className="text-sm text-center">{error}</p>
+          </div>
+        </div>
+      )}
+
       {/* CTA at the bottom */}
       <div className="fixed bottom-0 left-0 right-0 p-4 max-w-lg mx-auto z-10" style={{
         backgroundColor: 'hsl(var(--brand-background))'
@@ -344,8 +398,16 @@ function BookingSummary({
             color: 'hsl(var(--brand-button-primary-foreground))'
           }}
           onClick={() => handleClick()}
+          disabled={isLoading || isAutoSubmitting}
         >
-          Confirm Booking
+          {isLoading || isAutoSubmitting ? (
+            <div className="flex items-center space-x-2">
+              <div className="animate-spin rounded-full border-2 border-t-transparent h-4 w-4" />
+              <span>Creating reservation...</span>
+            </div>
+          ) : (
+            'Confirm Booking'
+          )}
         </Button>
       </div>
     </div>
