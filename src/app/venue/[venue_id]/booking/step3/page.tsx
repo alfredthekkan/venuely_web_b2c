@@ -23,7 +23,7 @@ type SummaryProps = {
   services: Service[];
   totalCost: number;
   note: string;
-  venue_id: string;
+  route: string;
 };
 
 function saveBookingModel(bookingData: BookingModel) {
@@ -97,18 +97,18 @@ export default function Summary( { params }: { params: Promise<{venue_id : strin
   }, [navContext.title])
 
   // In your BookingContextProvider component
-React.useEffect(() => {
-    const pendingBooking = retrieveBookingModel()
-    console.log("effect to check pending data called")
-    if (pendingBooking) {
-        // 1. Update your context state with the restored data
-        bookingContext.setBooking(pendingBooking)
-        // 2. Set flag to auto-submit after user authentication
-        setShouldAutoSubmit(true)
-    }else {
-      console.log("Nothing pending")
-    }
-}, []); // Run only once on mount}
+  React.useEffect(() => {
+      const pendingBooking = retrieveBookingModel()
+      console.log("effect to check pending data called")
+      if (pendingBooking) {
+          // 1. Update your context state with the restored data
+          bookingContext.setBooking(pendingBooking)
+          // 2. Set flag to auto-submit after user authentication
+          setShouldAutoSubmit(true)
+      }else {
+        console.log("Nothing pending")
+      }
+  }, []); // Run only once on mount}
 
   // Auto-submit booking when user is authenticated and we have pending booking
   useEffect(() => {
@@ -118,14 +118,14 @@ React.useEffect(() => {
       
       // Auto-submit the booking
       const autoSubmitBooking = async () => {
-        const venue_id = bookingContext.booking?.venue_id
+        const venueId = bookingContext.booking?.venue_id
         if (!bookingContext.booking?.start || !bookingContext.booking.end || !bookingContext.booking.providerId) {
           console.log("Some required values are null for auto-submit")
           return
         }
         
         const requestParams: CreateReservationRequest = {
-          venueId: venue_id ?? '',
+          venueId: venueId ?? '',
           staffId: bookingContext.booking.providerId,
           bookingResourceName: 'Default Resource',
           serviceIds: bookingContext.booking?.services.map((s) => s.id ?? '') ?? [],
@@ -152,7 +152,7 @@ React.useEffect(() => {
     }
   }, [shouldAutoSubmit, user, bookingContext.booking, router])
 
-console.log('start value:', bookingContext.booking?.start);    
+  console.log('start value:', bookingContext.booking?.start);    
   const summary = {
       venueName: bookingContext.booking?.venue_name,
       start: bookingContext.booking?.start?.toDateString() ?? '',
@@ -165,7 +165,7 @@ console.log('start value:', bookingContext.booking?.start);
   }
   return BookingSummary({
       ...summary,
-      venue_id
+      route: venue_id
   })
 }
 
@@ -176,7 +176,7 @@ function BookingSummary({
   services,
   totalCost,
   note,
-  venue_id,
+  route
 }: SummaryProps) {
 
     const router = useRouter();
@@ -190,7 +190,7 @@ function BookingSummary({
         return
       }
       const requestParams: CreateReservationRequest = {
-        venueId: venue_id ?? '',
+        venueId: bookingContext.booking.venue_id ?? '',
         staffId: bookingContext.booking.providerId,
         bookingResourceName: 'Default Resource',
         serviceIds: bookingContext.booking?.services.map((s) => s.id ?? '') ?? [],
@@ -207,7 +207,7 @@ function BookingSummary({
         const reservationRequest: ReservationPostRequest = { createReservationRequest: requestParams }
         const result = await bookingApi.reservationPost(reservationRequest);
         console.log("successfully created reservation")
-        router.push(`/venue/${venue_id}/booking/step4`);
+        router.push(`/venue/${route}/booking/step4`);
       } catch (err) {
         console.log(err)
       }
@@ -222,7 +222,7 @@ function BookingSummary({
           const booking = bookingContext.booking
           if (bookingContext.booking) 
             saveBookingModel(bookingContext.booking)
-          router.push(`/login?redirect=/venue/${venue_id}/booking/step3`)
+          router.push(`/login?redirect=/venue/${route}/booking/step3`)
         }
     }
 

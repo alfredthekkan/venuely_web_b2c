@@ -12,8 +12,6 @@ export default function DemoLandingPage() {
     router.push("/venue/PJjw3aE04RchkGlzUTjI");
   };
 
-
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
