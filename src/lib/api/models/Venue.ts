@@ -56,7 +56,7 @@ export interface Venue {
      * @type {string}
      * @memberof Venue
      */
-    scanName: string;
+    slug?: string | null;
     /**
      * 
      * @type {string}
@@ -72,7 +72,6 @@ export function instanceOfVenue(value: object): value is Venue {
     if (!('contactDetails' in value) || value['contactDetails'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
     if (!('images' in value) || value['images'] === undefined) return false;
-    if (!('scanName' in value) || value['scanName'] === undefined) return false;
     return true;
 }
 
@@ -90,7 +89,7 @@ export function VenueFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ven
         'contactDetails': ContactDetailsFromJSON(json['contactDetails']),
         'description': json['description'],
         'images': json['images'],
-        'scanName': json['scan_name'],
+        'slug': json['slug'] == null ? undefined : json['slug'],
         'thumbnail': json['thumbnail'] == null ? undefined : json['thumbnail'],
     };
 }
@@ -110,7 +109,7 @@ export function VenueToJSONTyped(value?: Venue | null, ignoreDiscriminator: bool
         'contactDetails': ContactDetailsToJSON(value['contactDetails']),
         'description': value['description'],
         'images': value['images'],
-        'scan_name': value['scanName'],
+        'slug': value['slug'],
         'thumbnail': value['thumbnail'],
     };
 }
