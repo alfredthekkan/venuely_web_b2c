@@ -10,20 +10,19 @@ import { NavigationContext } from "@/context/NavigationContext";
 import { BookingContext } from "@/context/BookingContext";
 // Removed old style imports - now using CSS variables directly
 
-export default function BookingSuccess() {
-    const navContext = useContext(NavigationContext)
+export default function BookingSuccess({params}: {params: Promise<{venue_id: string}>}) {
+  const { venue_id } = React.use(params);
+    
+  const navContext = useContext(NavigationContext)
     const bookingContext = useContext(BookingContext)
     const router = useRouter()
   
   useEffect(() => {
-      navContext.setTitle("Booking Success!")
+      navContext.setTitle("Booking Submitted")
     }, [navContext.title])
 
   const handleNewBooking = () => {
-    const venue_id = bookingContext.booking?.venue_id
-    if (venue_id) {
-      router.push(`/venue/${venue_id}/`)
-    }
+    router.push(`/venue/${venue_id}/`)
   }
   return (
     <div className="min-h-screen flex flex-col justify-center p-4 pb-20" style={{
@@ -37,12 +36,12 @@ export default function BookingSuccess() {
           <CardHeader>
             <CheckCircle2 className="w-16 h-16 mx-auto" style={{ color: 'hsl(var(--brand-primary))' }} />
             <CardTitle className="mt-4 text-2xl font-bold" style={{ color: 'hsl(var(--foreground))' }}>
-              Your booking has been confirmed
+              Booking Request Submitted!
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="mt-2" style={{ color: 'hsl(var(--muted-foreground))' }}>
-              You can now close this window.
+              Your booking request has been sent to {bookingContext.booking?.venue_name || 'the venue'}.
             </p>
           </CardContent>
         </Card>
