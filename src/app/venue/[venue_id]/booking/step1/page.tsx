@@ -17,7 +17,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Search } from 'lucide-react';
 // Removed old style imports - now using CSS variables directly
 
-export default function MoreServicesScreen() {
+export default function MoreServicesScreen( { params }: { params: Promise<{venue_id : string}>}) {
+  const { venue_id } = React.use(params);
   const [selectedServices, setSelectedServices] = useState<Set<Service>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const { venueResponse, setVenueResponse } = useVenue()
@@ -77,7 +78,7 @@ export default function MoreServicesScreen() {
       });
     }
 
-    router.push(`/venue/${venueResponse?.venue?.id ?? ""}/booking/step2`);
+    router.push(`/venue/${venue_id}/booking/step2`);
   };
 
   return (
