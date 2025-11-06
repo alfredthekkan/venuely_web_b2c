@@ -46,7 +46,7 @@ export default function TimeSlotSelector( { params }: { params: Promise<{venue_i
 
   const [selectedDate, setSelectedDate] = useState<Date>(getNextTwoWeeksDates()[0].date)
   const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(null)
-  const [providerid, setProviderId] = useState<string | null>(null)
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null)
   const [isBookingLoading, setIsBookingLoading] = useState(false)
   const [slots, setSlots] = useState<string[]>([]);
   const [providers, setProviders] = useState<BookableResourceAvailability[]>([])
@@ -60,7 +60,8 @@ export default function TimeSlotSelector( { params }: { params: Promise<{venue_i
   // Reset time slot when a new date is selected
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date)
-    setSelectedSlot(null) 
+    setSelectedSlot(null)
+    setSelectedProviderId(null)
     fetchSlots()
   }
 
@@ -123,7 +124,7 @@ export default function TimeSlotSelector( { params }: { params: Promise<{venue_i
         console.log("Start DateTime valid:", !isNaN(startDateTime.getTime()))
         console.log("End DateTime valid:", !isNaN(endDateTime.getTime()))
         
-        const updatedBooking = {...bookingContext.booking, providerId: providerid, start: startDateTime, end: endDateTime}
+        const updatedBooking = {...bookingContext.booking, providerId: selectedProviderId, start: startDateTime, end: endDateTime}
         console.log("Updated booking:", updatedBooking)
         bookingContext.setBooking(updatedBooking)
       }else {
@@ -135,8 +136,8 @@ export default function TimeSlotSelector( { params }: { params: Promise<{venue_i
 
   const handleTimeSlotSelection = (slot: AvailabilitySlot, providerId: string) => {
     setSelectedSlot(slot)
+    setSelectedProviderId(providerId)
     console.log(`selected provider id is : ${providerId}`)
-    setProviderId(providerId)
   }
 
   return (
@@ -170,7 +171,7 @@ export default function TimeSlotSelector( { params }: { params: Promise<{venue_i
               onSelect={handleTimeSlotSelection} 
               // Disable time selection until a date is chosen
               disabled={!selectedDate} 
-              selectedSlot={selectedSlot}
+              selectedSlot={selectedProviderId === provider.providerId ? selectedSlot : null}
               providerId={provider.providerId ?? ''}     
             />
           </div>
