@@ -78,6 +78,12 @@ export interface CreateReservationRequest {
      * @type {string}
      * @memberof CreateReservationRequest
      */
+    guestPhoneNumber?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateReservationRequest
+     */
     guestNotes?: string | null;
     /**
      * 
@@ -119,6 +125,7 @@ export function CreateReservationRequestFromJSONTyped(json: any, ignoreDiscrimin
         'status': json['status'] == null ? undefined : json['status'],
         'guestId': json['guest_id'] == null ? undefined : json['guest_id'],
         'guestName': json['guest_name'] == null ? undefined : json['guest_name'],
+        'guestPhoneNumber': json['guest_phone_number'] == null ? undefined : json['guest_phone_number'],
         'guestNotes': json['guest_notes'] == null ? undefined : json['guest_notes'],
         'eventId': json['event_id'] == null ? undefined : json['event_id'],
     };
@@ -144,6 +151,7 @@ export function CreateReservationRequestToJSONTyped(value?: CreateReservationReq
         'status': value['status'],
         'guest_id': value['guestId'],
         'guest_name': value['guestName'],
+        'guest_phone_number': value['guestPhoneNumber'],
         'guest_notes': value['guestNotes'],
         'event_id': value['eventId'],
     };
