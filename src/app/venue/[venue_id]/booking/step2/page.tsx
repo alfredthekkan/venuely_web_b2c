@@ -70,11 +70,19 @@ export default function TimeSlotSelector() {
     const date = selectedDate
     setProviders([])
 
+    // DEBUG: Log the context values
+    console.log("🔍 DEBUGGING Step2 Context Values:")
+    console.log("  venueResponse:", venueResponse)
+    console.log("  venue_id:", venue_id)
+    console.log("  bookingContext.booking:", bookingContext.booking)
+    console.log("  services:", services)
+    console.log("  services.length:", services.length)
+
     if (services.length == 0) {
-      console.log("No services selected!")
+      console.log("❌ No services selected!")
     }else {
       const ids = services.map((service) => service.title ?? '')
-      console.log("Selected services are")
+      console.log("✅ Selected services are")
       console.log(ids.join(', '))
     }
 
