@@ -15,7 +15,7 @@ interface BookingHomeProps {
   venue_id: string;
 }
 
-export function BookingHome({
+function BookingHome({
   title,
   image,
   description,
