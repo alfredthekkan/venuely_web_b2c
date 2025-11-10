@@ -9,7 +9,7 @@ export default function DemoLandingPage() {
   const router = useRouter();
   
   const handleDemoVenue = () => {
-    router.push("/PJjw3aE04RchkGlzUTjI");
+    router.push("/star-salon");
   };
 
   return (
