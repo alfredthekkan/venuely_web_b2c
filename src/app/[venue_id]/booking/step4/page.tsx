@@ -21,8 +21,8 @@ export default function BookingSuccess({params}: {params: Promise<{venue_id: str
       navContext.setTitle("Booking Submitted")
     }, [navContext.title])
 
-  const handleNewBooking = () => {
-    router.push(`/venue/${venue_id}/`)
+    const handleNewBooking = () => {
+    router.push(`/${venue_id}/`)
   }
   return (
     <div className="min-h-screen flex flex-col justify-center p-4 pb-20" style={{
