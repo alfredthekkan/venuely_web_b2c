@@ -130,7 +130,8 @@ export default function TimeSlotSelector( { params }: { params: Promise<{venue_i
       }else {
         console.log("booking context is empty")
       }
-      router.push(`/venue/${venue_id}/booking/step3`)
+      
+      router.push(`/${venue_id}/booking/step3`)
     }
   }
 

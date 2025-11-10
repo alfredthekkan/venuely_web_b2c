@@ -78,7 +78,7 @@ export default function MoreServicesScreen( { params }: { params: Promise<{venue
       });
     }
 
-    router.push(`/venue/${venue_id}/booking/step2`);
+    router.push(`/${venue_id}/booking/step2`);
   };
 
   return (
