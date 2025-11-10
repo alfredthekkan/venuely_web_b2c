@@ -36,7 +36,7 @@ export function BookingHome({
   
   const handleBooking = () => {
     if (!termsAccepted) return;
-    router.push(`/venue/${venue_id}/booking/step1`);
+    router.push(`/${venue_id}/booking/step1`);
   };
 
   useEffect(() => {
@@ -285,7 +285,7 @@ export function VenueHomePage( { params }: { params: Promise<{venue_id : string}
             </p>
 
             <div className="mt-4">
-            <Link href={`/venue/${venue_id}/services`}>
+            <Link href={`/${venue_id}/services`}>
               <Button
                 variant="outline"
               >
@@ -313,7 +313,7 @@ export function VenueHomePage( { params }: { params: Promise<{venue_id : string}
         borderTopColor: 'hsl(var(--brand-border))',
         borderTop: '1px solid'
       }}>
-      <Link href={`/venue/${venue_id}/booking/step1`}>
+      <Link href={`/${venue_id}/booking/step1`}>
         <Button
           size="lg"
           className="font-semibold shadow-lg transition-colors duration-200 w-full max-w-sm text-lg"

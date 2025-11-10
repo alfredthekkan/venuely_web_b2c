@@ -146,7 +146,7 @@ export default function Summary( { params }: { params: Promise<{venue_id : strin
           const reservationRequest: ReservationPostRequest = { createReservationRequest: requestParams }
           const result = await bookingApi.reservationPost(reservationRequest);
           console.log("Auto-submitted reservation successfully")
-          router.push(`/venue/${venue_id}/booking/step4`);
+          router.push(`/${venue_id}/booking/step4`);
         } catch (err) {
           console.log("Auto-submit failed:", err)
           // If auto-submit fails, user can still manually submit
@@ -223,7 +223,7 @@ function BookingSummary({
         const reservationRequest: ReservationPostRequest = { createReservationRequest: requestParams }
         const result = await bookingApi.reservationPost(reservationRequest);
         console.log("successfully created reservation")
-        router.push(`/venue/${route}/booking/step4`);
+        router.push(`/${route}/booking/step4`);
       } catch (err) {
         console.error("Failed to create reservation:", err)
         setError("Failed to create reservation. Please try again.")
@@ -243,7 +243,7 @@ function BookingSummary({
         const booking = bookingContext.booking
         if (bookingContext.booking) 
           saveBookingModel(bookingContext.booking)
-        router.push(`/login?redirect=/venue/${route}/booking/step3`)
+        router.push(`/login?redirect=/${route}/booking/step3`)
       }
     }
 

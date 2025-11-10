@@ -9,7 +9,7 @@ export default function DemoLandingPage() {
   const router = useRouter();
   
   const handleDemoVenue = () => {
-    router.push("/venue/PJjw3aE04RchkGlzUTjI");
+    router.push("/PJjw3aE04RchkGlzUTjI");
   };
 
   return (
