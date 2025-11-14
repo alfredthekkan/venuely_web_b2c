@@ -7,8 +7,8 @@ import { addDays, format } from "date-fns";
  */
 export const getNextTwoWeeksDates = () => {
   const dates = [];
-  // Start from 1 day after today (tomorrow)
-  for (let i = 1; i <= 14; i++) {
+  // Start from today
+  for (let i = 0; i < 14; i++) {
     const date = addDays(new Date(), i);
     dates.push({
       date: date,
