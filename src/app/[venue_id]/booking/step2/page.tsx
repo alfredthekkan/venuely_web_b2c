@@ -53,8 +53,65 @@ export default function TimeSlotSelector( { params }: { params: Promise<{venue_i
   const isBookingComplete = !!selectedDate && !!selectedSlot // Ensure both are non-null strings
 
   useEffect(() => {
-    fetchSlots()
-  }, [selectedDate])
+    const abortController = new AbortController()
+    
+    const fetchSlotsWithAbort = async () => {
+      const venue_id = venueResponse?.venue?.id ?? ''
+      const services = bookingContext.booking?.services ?? []
+      const date = selectedDate
+      setProviders([])
+
+      // DEBUG: Log the context values
+      console.log("🔍 DEBUGGING Step2 Context Values:")
+      console.log("  venueResponse:", venueResponse)
+      console.log("  venue_id:", venue_id)
+      console.log("  bookingContext.booking:", bookingContext.booking)
+      console.log("  services:", services)
+      console.log("  services.length:", services.length)
+
+      if (services.length == 0) {
+        console.log("❌ No services selected!")
+      }else {
+        const ids = services.map((service) => service.title ?? '')
+        console.log("✅ Selected services are")
+        console.log(ids.join(', '))
+      }
+
+      //construct the request param object
+      const requestParams: SlotsGetRequest = {
+        venueId: venue_id,
+        serviceIds: services.map((service) => service.id ?? ''),
+        date: date
+      }
+
+      try {
+        // CALL THE GENERATED FUNCTION with abort signal
+        const api = createApiClient()
+        const result = await api.slotsGet(requestParams, {
+          signal: abortController.signal
+        });
+        
+        // Only update state if request wasn't aborted
+        if (!abortController.signal.aborted) {
+          setProviders(result)
+        }
+      } catch (err: any) {
+        // Only log error if request wasn't aborted
+        if (!abortController.signal.aborted) {
+          console.error('Failed to fetch slots:', err);
+        } else {
+          console.log('Fetch slots request was cancelled')
+        }
+      }
+    }
+
+    fetchSlotsWithAbort()
+    
+    // Cleanup function to abort request if component unmounts or dependencies change
+    return () => {
+      abortController.abort()
+    }
+  }, [selectedDate, venueResponse?.venue?.id, bookingContext.booking?.services])
 
   //respond to date change
   // Reset time slot when a new date is selected
@@ -62,50 +119,10 @@ export default function TimeSlotSelector( { params }: { params: Promise<{venue_i
     setSelectedDate(date)
     setSelectedSlot(null)
     setSelectedProviderId(null)
-    fetchSlots()
+    // fetchSlots will be called automatically by useEffect when selectedDate changes
   }
 
   const router = useRouter()
-
-  const fetchSlots = async () => {
-    const venue_id = venueResponse?.venue?.id ?? ''
-    const services = bookingContext.booking?.services ?? []
-    const date = selectedDate
-    setProviders([])
-
-    // DEBUG: Log the context values
-    console.log("🔍 DEBUGGING Step2 Context Values:")
-    console.log("  venueResponse:", venueResponse)
-    console.log("  venue_id:", venue_id)
-    console.log("  bookingContext.booking:", bookingContext.booking)
-    console.log("  services:", services)
-    console.log("  services.length:", services.length)
-
-    if (services.length == 0) {
-      console.log("❌ No services selected!")
-    }else {
-      const ids = services.map((service) => service.title ?? '')
-      console.log("✅ Selected services are")
-      console.log(ids.join(', '))
-    }
-
-    //construct the request param object
-    const requestParams: SlotsGetRequest = {
-      venueId: venue_id,
-      serviceIds: services.map((service) => service.id ?? ''),
-      date: date
-    }
-
-    try {
-      // CALL THE GENERATED FUNCTION
-      const api = createApiClient()
-      const result = await api.slotsGet(requestParams);
-      setProviders(result)
-    }catch (err) {
-      // Handle any network or API-specific errors
-      console.error('Failed to fetch slots:', err);
-    }
-  };
 
   const handleBooking = () => {
     if (isBookingComplete) {
