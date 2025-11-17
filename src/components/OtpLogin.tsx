@@ -123,19 +123,20 @@ export default function OtpLogin() {
     const requestOtp = (e?: FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
         
-        // Enhanced phone number validation
-        const cleanNumber = phoneNumber.replace(/\s+/g, '').replace(/[^\+\d]/g, '');
+        // Enhanced phone number validation for Indian numbers only
+        // Remove any spaces and non-digit characters except +
+        const cleanNumber = phoneNumber.replace(/\s+/g, '').replace(/[^\d]/g, '');
         
-        // Must start with +, followed by 1-3 digit country code, then 4-14 digits
-        const phoneRegex = /^\+[1-9]\d{6,14}$/;
+        // Indian mobile numbers: 10 digits starting with 6-9
+        const indianMobileRegex = /^[6-9]\d{9}$/;
         
-        if (!phoneRegex.test(cleanNumber)) {
-            setError("Please enter a valid phone number with country code (e.g., +911234567890)");
+        if (!indianMobileRegex.test(cleanNumber)) {
+            setError("Please enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9)");
             return;
         }
 
-        // Use cleaned number
-        const formattedNumber = cleanNumber;
+        // Add +91 prefix to form the complete number
+        const formattedNumber = `+91${cleanNumber}`;
         
         setResendCountDown(60)
         startTransition(async () => {
@@ -164,7 +165,7 @@ export default function OtpLogin() {
                 
                 switch(error.code) {
                     case "auth/invalid-phone-number":
-                        setError("Invalid phone number format. Please include country code (e.g., +1234567890)")
+                        setError("Invalid phone number format. Please enter a valid 10-digit mobile number")
                         break;
                     case "auth/too-many-requests":
                         setError("Too many requests. Please try again later...")
@@ -213,18 +214,33 @@ export default function OtpLogin() {
         {!confirmationResult && (
             <form onSubmit={requestOtp}>
                 <h1 className='font-semibold mb-2' style={{ color: 'hsl(var(--foreground))' }}>Please Enter your phone number</h1>
-                <Input 
-                    type='tel' 
-                    value={phoneNumber} 
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    style={{
-                        backgroundColor: 'hsl(var(--background))',
-                        borderColor: 'hsl(var(--brand-border))',
-                        color: 'hsl(var(--foreground))'
-                    }}
-                />
+                <div className='relative flex items-center'>
+                  <div className='absolute left-3 z-10 flex items-center pointer-events-none'>
+                    <span className='text-sm font-medium' style={{ color: 'hsl(var(--foreground))' }}>
+                      🇮🇳 +91
+                    </span>
+                    <span className='mx-2 text-gray-400'>|</span>
+                  </div>
+                  <Input 
+                      type='tel' 
+                      value={phoneNumber} 
+                      onChange={(e) => {
+                        // Only allow numbers and limit to 10 digits
+                        const value = e.target.value.replace(/[^\d]/g, '').slice(0, 10);
+                        setPhoneNumber(value);
+                      }}
+                      placeholder='Enter 10-digit mobile number'
+                      maxLength={10}
+                      className='pl-20'
+                      style={{
+                          backgroundColor: 'hsl(var(--background))',
+                          borderColor: 'hsl(var(--brand-border))',
+                          color: 'hsl(var(--foreground))'
+                      }}
+                  />
+                </div>
                 <p className='text-xs mt-2' style={{ color: 'hsl(var(--muted-foreground))' }}>
-                    Please enter your number with the country code (i.e, +91 for India)
+                    Enter your 10-digit Indian mobile number (starting with 6, 7, 8, or 9)
                 </p>
             </form>
         )}
